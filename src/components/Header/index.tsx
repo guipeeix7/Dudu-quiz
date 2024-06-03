@@ -11,7 +11,7 @@ type Props = {
   icon: React.FC<IconProps>;
 }
 
-export function Header({ title, subtitle, icon: Icon, onPress }: Props) {
+export function Header({ title, subtitle }: Props) {
   return (
     <View style={styles.container}>
       <View>
@@ -24,7 +24,7 @@ export function Header({ title, subtitle, icon: Icon, onPress }: Props) {
         </Text>
       </View>
 
-      <TouchableOpacity
+      {/* <TouchableOpacity
         style={styles.history}
         activeOpacity={0.7}
         onPress={onPress}
@@ -33,7 +33,7 @@ export function Header({ title, subtitle, icon: Icon, onPress }: Props) {
           size={28}
           color={THEME.COLORS.GREY_100}
         />
-      </TouchableOpacity>
+      </TouchableOpacity> */}
     </View>
   );
 }

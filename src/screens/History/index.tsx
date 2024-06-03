@@ -63,9 +63,7 @@ export function History() {
     <View style={styles.container}>
       <Header
         title="Histórico"
-        subtitle={`Seu histórico de estudos${'\n'}realizados`}
-        icon={HouseLine}
-        onPress={goBack}
+        subtitle={`Resultados passados ${'\n'}`}
       />
 
       <ScrollView
