@@ -9,6 +9,18 @@ export async function historyGetAll() {
     const storage = await AsyncStorage.getItem(HISTORY_COLLECTION);
     const history: HistoryProps[] = storage ? JSON.parse(storage) : [];
 
+
+    
+    const users = await AsyncStorage.getItem('users');
+    let userData  = JSON.parse(users || '{}');
+
+    // history.forEach(element => {
+    //   // userData.find(user => userId)
+    //   userData.filter((d)=> d.e_name === name).map((res) => res.fields)
+
+    // });
+    
+
     return history;
   } catch (error) {
     Alert.alert('Opa', 'Não foi possível obter o histórico.');

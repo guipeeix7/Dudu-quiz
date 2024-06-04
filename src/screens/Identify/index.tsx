@@ -1,28 +1,22 @@
 import React from "react";
 import {
   SafeAreaView,
-  StyleSheet,
   Text,
   TextInput,
   View,
   TouchableOpacity,
   Alert,
+  ImageBackground,
 } from "react-native";
-import { THEME } from "../../styles/theme";
 import { styles } from "./styles";
 import { useNavigation } from "@react-navigation/native";
 import Animated, {
-  useAnimatedStyle,
   useSharedValue,
   withSequence,
   withTiming,
-  interpolate,
   Easing,
-  useAnimatedScrollHandler,
-  Extrapolate,
-  runOnJS,
 } from "react-native-reanimated";
-import AsyncStorage from "@react-native-async-storage/async-storage";
+
 import { TextInputMask } from "react-native-masked-text";
 import { Icon } from "react-native-elements";
 import * as Haptics from "expo-haptics";
@@ -58,7 +52,6 @@ export function Identify() {
       return navigate("history");
     }
 
-
     if (!name.trim()) {
       Alert.alert("Alerta", "O campo nome é obrigatório.");
       return false;
@@ -87,74 +80,78 @@ export function Identify() {
     } catch (error) {
       Alert.alert("Error", "Failed to save the data to the storage");
     }
-
     navigate("quiz", { id: "1", userId:userId });
   };
 
   return (
-    <SafeAreaView style={styles.container}>
-      <View style={styles.innerContainer}>
-        <Text style={styles.headerLogo}>Complete Bari</Text>
-        <Text style={styles.subHeader}>QUIZZ</Text>
+    <ImageBackground
+        source={require('./../../assets/background.png')} // path to your image
+        style={styles.background}
+      >
+        <SafeAreaView style={styles.container}>
+          <View style={styles.innerContainer}>
+            <Text style={styles.headerLogo}>Complete Bari</Text>
+            <Text style={styles.subHeader}>QUIZZ</Text>
 
-        <Text
-          style={styles.inputLabel}
-          aria-label="Label for Name"
-          nativeID="labelForName"
-        >
-          Nome:
-        </Text>
-        <TextInput
-          aria-labelledby="labelForName"
-          value={name}
-          onChangeText={(text) => setName(text)}
-          style={styles.input}
-        />
+            <Text
+              style={styles.inputLabel}
+              aria-label="Label for Name"
+              nativeID="labelForName"
+            >
+              Nome:
+            </Text>
+            <TextInput
+              aria-labelledby="labelForName"
+              value={name}
+              onChangeText={(text) => setName(text)}
+              style={styles.input}
+            />
 
-        <Text
-          style={styles.inputLabel}
-          aria-label="Label for Email"
-          nativeID="labelForEmail"
-        >
-          Email:
-        </Text>
-        <TextInput
-          value={email}
-          onChangeText={(text) => setEmail(text)}
-          style={styles.input}
-          keyboardType="email-address"
-        />
+            <Text
+              style={styles.inputLabel}
+              aria-label="Label for Email"
+              nativeID="labelForEmail"
+            >
+              Email:
+            </Text>
+            <TextInput
+              value={email}
+              onChangeText={(text) => setEmail(text)}
+              style={styles.input}
+              keyboardType="email-address"
+            />
 
-        <Text
-          style={styles.inputLabel}
-          aria-label="Label for Phone"
-          nativeID="labelForEmail"
-        >
-          Telefone:
-        </Text>
-        <TextInputMask
-          value={phone}
-          onChangeText={(text) => setPhone(text)}
-          style={styles.input}
-          keyboardType="phone-pad"
-          type={"cel-phone"}
-          options={{
-            maskType: "BRL",
-            withDDD: true,
-            dddMask: "(99) ",
-          }}
-        />
+            <Text
+              style={styles.inputLabel}
+              aria-label="Label for Phone"
+              nativeID="labelForEmail"
+            >
+              Telefone:
+            </Text>
+            <TextInputMask
+              value={phone}
+              onChangeText={(text) => setPhone(text)}
+              style={styles.input}
+              keyboardType="phone-pad"
+              type={"cel-phone"}
+              options={{
+                maskType: "BRL",
+                withDDD: true,
+                dddMask: "(99) ",
+              }}
+            />
 
-        <TouchableOpacity
-          onPress={() => validateFields()}
-          style={styles.button}
-        >
-          <Text style={styles.buttonText}>
-            Iniciar
-            <Icon name="arrow-right" size={20} color="white" type="entypo" />
-          </Text>
-        </TouchableOpacity>
-      </View>
-    </SafeAreaView>
+            <TouchableOpacity
+              onPress={() => validateFields()}
+              style={styles.button}
+            >
+              <Text style={styles.buttonText}>
+                Iniciar
+                {/* <Icon name="arrow-right" size={20} color="white" type="entypo" /> */}
+              </Text>
+            </TouchableOpacity>
+          </View>
+        </SafeAreaView>
+      </ImageBackground>
   );
 }

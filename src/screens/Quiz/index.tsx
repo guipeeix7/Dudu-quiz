@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { Alert, BackHandler, Text, View } from 'react-native';
+import { Alert, BackHandler, ImageBackground, Text, View } from 'react-native';
 import Animated, {
   useAnimatedStyle,
   useSharedValue,
@@ -107,6 +107,7 @@ export function Quiz() {
       return handleSkipConfirm();
     }
     let correct = (quiz.questions[currentQuestion].correct === alternativeSelected) ? 1 : 0; 
+
     if (correct) {
       setPoints(prevState => prevState + 1);
 
@@ -224,6 +225,35 @@ export function Quiz() {
       cardPosition.value = withTiming(0);
     })
 
+
+  function getQuestionsByLevel(quiz: any[], numQuestions: number): any[] {
+    const questions: any[] = [];
+
+    // Group questions by level
+    const groupedByLevel = quiz.reduce((acc, curr) => {
+        acc[curr.id] = [...(acc[curr.id] || []), ...curr.questions];
+        return acc;
+    }, {});
+    
+    for (const level in groupedByLevel) {
+        if (Object.prototype.hasOwnProperty.call(groupedByLevel, level)) {
+            const levelQuestions = groupedByLevel[level];
+            const randomIndices = Array.from({ length: numQuestions }, () => Math.floor(Math.random() * levelQuestions.length));
+            randomIndices.forEach(index => questions.push(levelQuestions[index]));
+        }
+    }
+
+    let data = [{
+      id: '1',
+      title: 'QUIZZ COMPLETE BARI',
+      level: 1,
+      questions: questions
+
+    }]
+    
+    return data;
+  }
+
   const dragStyles = useAnimatedStyle(() => {
     const rotateZ = cardPosition.value / CARD_INCLINATION;
 
@@ -236,7 +266,9 @@ export function Quiz() {
   });
 
   useEffect(() => {
-    const quizSelected = QUIZ.filter(item => item.id === id)[0];
+    // const quizSelected = QUIZ.filter(item => item.id === id)[0];
+    const quizSelected = getQuestionsByLevel(QUIZ, 1)[0];
+    // console.log("quizSelected", getQuestionsByLevel(QUIZ, 2)[0])
 
     setQuiz(quizSelected);
     setIsLoading(false);
@@ -256,49 +288,55 @@ export function Quiz() {
   }
 
   return (
-    <View style={styles.container}>
-      <OverlayFeedback status={statusReply} />
-
-      <Animated.View style={fixedProgressBarStyles}>
-        <Text style={styles.title}>{quiz.title}</Text>
-
-        <ProgressBar
-          total={quiz.questions.length}
-          current={currentQuestion + 1}
-        />
-      </Animated.View>
-
-      <Animated.ScrollView
-        showsVerticalScrollIndicator={false}
-        contentContainerStyle={styles.question}
-        onScroll={scrollHandler}
-        scrollEventThrottle={16}
+    
+    <ImageBackground
+        source={require('./../../assets/background.png')} // path to your image
+        style={styles.background}
       >
-        <Animated.View style={[styles.header, headerStyles]}>
-          <QuizHeader
-            title={quiz.title}
-            currentQuestion={currentQuestion + 1}
-            totalOfQuestions={quiz.questions.length}
+      <View style={styles.container}>
+        <OverlayFeedback status={statusReply} />
+
+        <Animated.View style={fixedProgressBarStyles}>
+          <Text style={styles.title}>{quiz.title}</Text>
+
+          <ProgressBar
+            total={quiz.questions.length}
+            current={currentQuestion + 1}
           />
         </Animated.View>
 
-        <GestureDetector gesture={onPan}>
-          <Animated.View style={[shakeStyleAnimated, dragStyles]}>
-            <Question
-              key={quiz.questions[currentQuestion].title}
-              question={quiz.questions[currentQuestion]}
-              alternativeSelected={alternativeSelected}
-              setAlternativeSelected={setAlternativeSelected}
-              onUnmount={() => setStatusReply(0)}
+        <Animated.ScrollView
+          showsVerticalScrollIndicator={false}
+          contentContainerStyle={styles.question}
+          onScroll={scrollHandler}
+          scrollEventThrottle={16}
+        >
+          <Animated.View style={[styles.header, headerStyles]}>
+            <QuizHeader
+              title={quiz.title}
+              currentQuestion={currentQuestion + 1}
+              totalOfQuestions={quiz.questions.length}
             />
           </Animated.View>
-        </GestureDetector>
 
-        <View style={styles.footer}>
-          <OutlineButton title="Parar" onPress={handleStop} />
-          <ConfirmButton onPress={handleConfirm} />
-        </View>
-      </Animated.ScrollView>
-    </View >
+          <GestureDetector gesture={onPan}>
+            <Animated.View style={[shakeStyleAnimated, dragStyles]}>
+              <Question
+                key={quiz.questions[currentQuestion].title}
+                question={quiz.questions[currentQuestion]}
+                alternativeSelected={alternativeSelected}
+                setAlternativeSelected={setAlternativeSelected}
+                onUnmount={() => setStatusReply(0)}
+              />
+            </Animated.View>
+          </GestureDetector>
+
+          <View style={styles.footer}>
+            <OutlineButton title="Parar" onPress={handleStop} />
+            <ConfirmButton onPress={handleConfirm} />
+          </View>
+        </Animated.ScrollView>
+      </View >
+    </ImageBackground>
   );
 }

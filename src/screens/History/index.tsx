@@ -12,15 +12,13 @@ import { styles } from './styles';
 import { historyGetAll, historyRemove } from '../../storage/quizHistoryStorage';
 import { Loading } from '../../components/Loading';
 import { THEME } from '../../styles/theme';
-import AsyncStorage from '@react-native-async-storage/async-storage';
 
 export function History() {
   const [isLoading, setIsLoading] = useState(true);
   const [history, setHistory] = useState<HistoryProps[]>([]);
 
   const swipeableRefs = useRef<Swipeable[]>([]);
-
-  const { goBack } = useNavigation();
+  
 
   async function fetchHistory() {
     const response = await historyGetAll();

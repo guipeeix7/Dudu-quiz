@@ -51,14 +51,10 @@ export function Option({ checked, title, ...rest }: Props) {
       }
       {...rest}
     >
-      <Text style={styles.title}>
-        {title}
-      </Text>
-
       <Canvas style={{width: CHECK_SIZE * 2, height: CHECK_SIZE * 2}}>
         <Path
           path={path}
-          color={THEME.COLORS.GREY_500}
+          color={THEME.COLORS.WHITE}
           style="stroke"
           strokeWidth={CHECK_STROKE}
         />
@@ -81,6 +77,12 @@ export function Option({ checked, title, ...rest }: Props) {
           <BlurMask blur={4} style="solid" />
         </Circle>
       </Canvas>
+      
+      <Text style={styles.title}>
+        {title}
+      </Text>
+
+      
     </TouchableOpacity>
   );
 }

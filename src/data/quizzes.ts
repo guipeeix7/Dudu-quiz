@@ -3,7 +3,7 @@ import { CloudArrowUp, CodeSimple, ToggleLeft, PaintBucket, DeviceMobile, GitFor
 export const QUIZZES = [
   {
     id: '1',
-    title: 'Utilizando Estados',
+    title: 'Bariatrica',
     level: 1,
     svg: ToggleLeft,
   }

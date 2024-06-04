@@ -4,7 +4,6 @@ import { THEME } from '../../styles/theme';
 export const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: THEME.COLORS.GREEN_0,
   },
   question: {
     alignItems: 'center',
@@ -26,5 +25,13 @@ export const styles = StyleSheet.create({
   header: {
     width: '100%',
     marginBottom: 21,
+  },
+  
+  background: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    width: '100%',
+    height: '100%',
   }
 });
