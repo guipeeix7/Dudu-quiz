@@ -14,12 +14,24 @@ export async function historyGetAll() {
     const users = await AsyncStorage.getItem('users');
     let userData  = JSON.parse(users || '{}');
 
-    // history.forEach(element => {
-    //   // userData.find(user => userId)
-    //   userData.filter((d)=> d.e_name === name).map((res) => res.fields)
 
+    for(let i = 0 ; i <  history.length ; i++){
+      let findFela = userData.map((x:any) => {return x[0]}).find((element:any) => 
+        element.userId == history[i].userId
+      )
+      history[i].userName = findFela.name 
+      history[i].email = findFela.email 
+      
+    }
+
+    // history.forEach(elementHistory => {
+    //   let findFela = userData.map((x:any) => {return x[0]}).find((element:any) => 
+    //     element.userId == elementHistory.userId
+    //   )
+    //   // history[]
     // });
-    
+
+    console.log(history)
 
     return history;
   } catch (error) {

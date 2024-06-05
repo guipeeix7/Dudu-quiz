@@ -11,6 +11,9 @@ export type HistoryProps = {
   points: number;
   questions: number;
   level: number;
+  userName?:string;
+  email?:string;
+  
 }
 
 type Props = {
@@ -31,6 +34,12 @@ export function HistoryCard({ data }: Props) {
         </Text>
         <Text style={styles.subtitle}>
           User Id {data.userId}
+        </Text>
+        <Text style={styles.subtitle}>
+          User Name {data.userName}
+        </Text>
+        <Text style={styles.subtitle}>
+          Email {data.email}
         </Text>
         
       </View>
