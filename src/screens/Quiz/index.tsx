@@ -30,6 +30,7 @@ import { OutlineButton } from '../../components/OutlineButton';
 import { ProgressBar } from '../../components/ProgressBar';
 import { OverlayFeedback } from '../../components/OverlayFeedback';
 import { ManageStorage } from '../../services/ManageStorage';
+import { ShowAnswerButton } from '../../components/ShowAnswerButton';
 
 interface Params {
   id: string;
@@ -48,7 +49,8 @@ export function Quiz() {
   const [quiz, setQuiz] = useState<QuizProps>({} as QuizProps);
   const [alternativeSelected, setAlternativeSelected] = useState<null | number>(null);
   const [statusReply, setStatusReply] = useState(0);
-
+  const [isConfirmed, setIsConfirmed] = useState(0);
+  const [correctAlternative, setCorrectAlternative] = useState<number>();
   const shake = useSharedValue(0);
   const scrollY = useSharedValue(0);
   const cardPosition = useSharedValue(0);
@@ -68,6 +70,19 @@ export function Quiz() {
 
     await sound.setPositionAsync(0);
     await sound.playAsync();
+  }
+
+  function showResult(){
+    let correct = (quiz.questions[currentQuestion].correct === alternativeSelected) ? 1 : 0; 
+
+    if (correct) {
+      setPoints((points) => points+1 );
+      setAlternativeSelected(null)
+    }
+    else{
+      setIsConfirmed(isConfirmed=>1)
+    }
+    
   }
 
   function handleSkipConfirm() {
@@ -93,31 +108,43 @@ export function Quiz() {
     });
   }
 
-  function handleNextQuestion() {
-
+  async function handleNextQuestion() {
     if (currentQuestion < quiz.questions.length - 1) {
-      setCurrentQuestion(prevState => prevState + 1)
+      await setCurrentQuestion(prevState => prevState + 1)
+
     } else {
-      handleFinished();
+      await handleFinished();
     }
   }
 
+  useEffect(() => {    
+    (async () => {
+
+      if(points > 0 ){      
+        setIsConfirmed(isConfirmed=>1)
+
+        await setStatusReply(1);
+        
+        setTimeout(() => {
+          handleNextQuestion();
+        },1800)
+        setIsConfirmed(isConfirmed=>0)
+      }
+    })();
+  }, [points]);
+
   async function handleConfirm() {
+    // setCorrectAlternative(quiz.questions[currentQuestion].correct)
+
+
     if (alternativeSelected === null) {
+      setIsConfirmed(isConfirmed => 0);
+
       return handleSkipConfirm();
     }
     let correct = (quiz.questions[currentQuestion].correct === alternativeSelected) ? 1 : 0; 
 
-    if (correct) {
-      setPoints(prevState => prevState + 1);
-
-      await playSound(true);
-
-      setStatusReply(1);
-      handleNextQuestion();
-    } else {
-      await playSound(false);
-
+    if (!correct) {
       setStatusReply(2);
       shakeAnimation();
     }
@@ -128,11 +155,8 @@ export function Quiz() {
     } catch (error) {
       console.error("Error saving users to AsyncStorage", error);
     }
-
-    manageStorage.getAllData().then((res) => {
-      console.log(res)
-    });
-
+    setIsConfirmed(isConfirmed => 0);
+    
     setAlternativeSelected(null);
   }
 
@@ -229,7 +253,6 @@ export function Quiz() {
   function getQuestionsByLevel(quiz: any[], numQuestions: number): any[] {
     const questions: any[] = [];
 
-    // Group questions by level
     const groupedByLevel = quiz.reduce((acc, curr) => {
         acc[curr.id] = [...(acc[curr.id] || []), ...curr.questions];
         return acc;
@@ -268,8 +291,8 @@ export function Quiz() {
   useEffect(() => {
     // const quizSelected = QUIZ.filter(item => item.id === id)[0];
     const quizSelected = getQuestionsByLevel(QUIZ, 1)[0];
-    // console.log("quizSelected", getQuestionsByLevel(QUIZ, 2)[0])
-
+    
+    
     setQuiz(quizSelected);
     setIsLoading(false);
   }, []);
@@ -289,12 +312,13 @@ export function Quiz() {
 
   return (
     
-    <ImageBackground
+      <ImageBackground
         source={require('./../../assets/background.png')} // path to your image
         style={styles.background}
       >
+        
+      <OverlayFeedback status={statusReply} />
       <View style={styles.container}>
-        <OverlayFeedback status={statusReply} />
 
         <Animated.View style={fixedProgressBarStyles}>
           <Text style={styles.title}>{quiz.title}</Text>
@@ -326,6 +350,8 @@ export function Quiz() {
                 question={quiz.questions[currentQuestion]}
                 alternativeSelected={alternativeSelected}
                 setAlternativeSelected={setAlternativeSelected}
+                isConfirmed = {isConfirmed}
+                correctAlternative = { quiz.questions[currentQuestion].correct }
                 onUnmount={() => setStatusReply(0)}
               />
             </Animated.View>
@@ -333,7 +359,13 @@ export function Quiz() {
 
           <View style={styles.footer}>
             <OutlineButton title="Parar" onPress={handleStop} />
+
+            {(isConfirmed == 0) ? (
+              <ShowAnswerButton onPress={showResult} />
+            ):
             <ConfirmButton onPress={handleConfirm} />
+
+          }
           </View>
         </Animated.ScrollView>
       </View >

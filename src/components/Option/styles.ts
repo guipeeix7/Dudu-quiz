@@ -26,8 +26,14 @@ export const styles = StyleSheet.create({
     flex: 1,
   },
   checked: {
-    borderWidth: 1,
-
+    borderWidth: 4,
     borderColor: THEME.COLORS.BRAND_LIGHT
+  },
+  wrongChecked: {
+    borderWidth: 1,
+    borderColor: THEME.COLORS.DANGER_LIGHT
+  },
+  wrong:{
+    borderColor: THEME.COLORS.DANGER_LIGHT
   }
 });

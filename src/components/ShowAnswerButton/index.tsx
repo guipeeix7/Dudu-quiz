@@ -1,10 +1,10 @@
-import { ArrowRight, Check } from 'phosphor-react-native';
+import { Check } from 'phosphor-react-native';
 import { Text, TouchableOpacity, TouchableOpacityProps } from 'react-native';
 
 import { styles } from './styles';
 import { THEME } from '../../styles/theme';
 
-export function ConfirmButton({ ...rest }: TouchableOpacityProps) {
+export function ShowAnswerButton({ ...rest }: TouchableOpacityProps) {
   return (
     <TouchableOpacity
       activeOpacity={0.7}
@@ -12,10 +12,10 @@ export function ConfirmButton({ ...rest }: TouchableOpacityProps) {
       {...rest}
     >
       <Text style={styles.title}>
-        Próxima
+        Responder
       </Text>
 
-      <ArrowRight
+      <Check
         color={THEME.COLORS.WHITE}
         weight="bold"
         size={24}

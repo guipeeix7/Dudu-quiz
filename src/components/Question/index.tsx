@@ -3,6 +3,7 @@ import Animated, { Keyframe, runOnJS } from 'react-native-reanimated';
 
 import { Option } from '../Option';
 import { styles } from './styles';
+import { useEffect } from 'react';
 
 type QuestionProps = {
   title: string;
@@ -14,6 +15,8 @@ type Props = {
   alternativeSelected?: number | null;
   setAlternativeSelected?: (value: number) => void;
   onUnmount: () => void;
+  isConfirmed?:number|null;
+  correctAlternative?:number|null;
 }
 
 const SCREEN_WIDTH = Dimensions.get('window').width;
@@ -22,7 +25,9 @@ export function Question({
   question,
   alternativeSelected,
   setAlternativeSelected,
-  onUnmount
+  onUnmount,
+  isConfirmed,
+  correctAlternative
 }: Props) {
   const enteringKeyframe = new Keyframe({
     0: {
@@ -61,6 +66,12 @@ export function Question({
     }
   });
 
+
+  useEffect(() => {    
+
+    console.log("CURRENT STATE", correctAlternative);
+  }, []);
+
   return (
     <Animated.View
       style={styles.container}
@@ -82,8 +93,15 @@ export function Question({
           <Option
             key={index}
             title={alternative}
+            isConfirmed={isConfirmed}
+            correctAlternative = {correctAlternative}
             checked={alternativeSelected === index}
-            onPress={() => setAlternativeSelected && setAlternativeSelected(index)}
+            alternativeSelected={alternativeSelected}
+            index = {index}
+            onPress={() => {
+              if(!isConfirmed )
+              setAlternativeSelected && setAlternativeSelected(index)
+            }}
           />
         ))
       }

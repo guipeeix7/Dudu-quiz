@@ -9,8 +9,6 @@ export async function historyGetAll() {
     const storage = await AsyncStorage.getItem(HISTORY_COLLECTION);
     const history: HistoryProps[] = storage ? JSON.parse(storage) : [];
 
-
-    
     const users = await AsyncStorage.getItem('users');
     let userData  = JSON.parse(users || '{}');
 
@@ -23,13 +21,6 @@ export async function historyGetAll() {
       history[i].email = findFela.email 
       
     }
-
-    // history.forEach(elementHistory => {
-    //   let findFela = userData.map((x:any) => {return x[0]}).find((element:any) => 
-    //     element.userId == elementHistory.userId
-    //   )
-    //   // history[]
-    // });
 
     console.log(history)
 
