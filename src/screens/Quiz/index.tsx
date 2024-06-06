@@ -251,7 +251,7 @@ export function Quiz() {
 
   function getQuestionsByLevel(quiz: any[], numQuestions: number): any[] {
     const questions: any[] = [];
-
+    
     const groupedByLevel = quiz.reduce((acc, curr) => {
         acc[curr.id] = [...(acc[curr.id] || []), ...curr.questions];
         return acc;
@@ -260,7 +260,7 @@ export function Quiz() {
     for (const level in groupedByLevel) {
         if (Object.prototype.hasOwnProperty.call(groupedByLevel, level)) {
             const levelQuestions = groupedByLevel[level];
-            const randomIndices = Array.from({ length: numQuestions }, () => Math.floor(Math.random() * levelQuestions.length));
+            const randomIndices = getUniqueRandomIndices(numQuestions, levelQuestions.length)
             randomIndices.forEach(index => questions.push(levelQuestions[index]));
         }
     }
@@ -272,7 +272,7 @@ export function Quiz() {
       questions: questions
 
     }]
-    
+
     return data;
   }
 
@@ -287,9 +287,24 @@ export function Quiz() {
     }
   });
 
+  function getUniqueRandomIndices(numQuestions:any, levelQuestionsLength:any) {
+    // Create an array of indices
+    const indices = Array.from({ length: levelQuestionsLength }, (_, index) => index);
+  
+    // Shuffle the array using Fisher-Yates algorithm
+    for (let i = indices.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [indices[i], indices[j]] = [indices[j], indices[i]];
+    }
+
+
+    // Return the first numQuestions indices
+    return indices.slice(0, numQuestions);
+  }
+
   useEffect(() => {
     // const quizSelected = QUIZ.filter(item => item.id === id)[0];
-    const quizSelected = getQuestionsByLevel(QUIZ, 1)[0];
+    const quizSelected = getQuestionsByLevel(QUIZ, 3)[0];
     
     
     setQuiz(quizSelected);
