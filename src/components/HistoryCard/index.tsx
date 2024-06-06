@@ -24,11 +24,10 @@ type Props = {
 export function HistoryCard({ data }: Props) {
   return (
     <View style={styles.container}>
-      <View>
+      <View style={styles.subcontainer}>
         <Text style={styles.title}>
           {data.title}
         </Text>
-
         <Text style={styles.subtitle}>
           Você acertou {data.points} de {data.questions}
         </Text>

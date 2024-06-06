@@ -3,15 +3,21 @@ import { THEME } from '../../styles/theme';
 
 export const styles = StyleSheet.create({
   container: {
-    width: '100%',
-    height: 90,
+    width: '79%',
+    height: 120,
     borderRadius: 6,
-    backgroundColor: THEME.COLORS.GREY_700,
+    backgroundColor: THEME.COLORS.GREY_800,
     padding: 16,
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    marginBottom: 12
+    marginBottom: 12,
+    paddingTop: 42,
+    
+  },
+  subcontainer:{
+    height: 120,
+    
   },
   title: {
     color: THEME.COLORS.GREY_100,

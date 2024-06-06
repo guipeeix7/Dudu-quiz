@@ -33,7 +33,7 @@ export function Finish() {
 
       <Button
         title="Ir para o início"
-        onPress={() => navigate('identify')} 
+        onPress={() => navigate('initQuizz')} 
       />
     </View>
   );

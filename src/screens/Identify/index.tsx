@@ -21,6 +21,8 @@ import { TextInputMask } from "react-native-masked-text";
 import { Icon } from "react-native-elements";
 import * as Haptics from "expo-haptics";
 import { ManageStorage } from "../../services/ManageStorage";
+import CircleOfDots from "../../components/CircleOfDots";
+import { BackgroundImage } from "react-native-elements/dist/config";
 
 export function Identify() {
   const [name, setName] = React.useState("");
@@ -47,7 +49,7 @@ export function Identify() {
   }
 
   const validateFields = async () => {
-
+    
     if(isAdmin()){
       return navigate("history");
     }
@@ -88,8 +90,11 @@ export function Identify() {
         source={require('./../../assets/background.png')} // path to your image
         style={styles.background}
       >
+
         <SafeAreaView style={styles.container}>
+  
           <View style={styles.innerContainer}>
+
             <Text style={styles.headerLogo}>Complete Bari</Text>
             <Text style={styles.subHeader}>QUIZZ</Text>
 

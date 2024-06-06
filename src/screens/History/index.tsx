@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from 'react';
 import { useNavigation } from '@react-navigation/native';
-import { View, ScrollView, Alert } from 'react-native';
+import { View, ScrollView, Alert, ImageBackground } from 'react-native';
 import { HouseLine, Trash } from 'phosphor-react-native';
 import Animated, { Layout, SlideInRight, SlideOutRight } from 'react-native-reanimated';
 import { Swipeable } from 'react-native-gesture-handler';
@@ -58,7 +58,12 @@ export function History() {
   }
 
   return (
+    
     <View style={styles.container}>
+    <ImageBackground
+        source={require('./../../assets/background.png')} // path to your image
+        style={styles.background}
+      >
       <Header
         title="Histórico"
         subtitle={`Resultados passados ${'\n'}`}
@@ -82,12 +87,12 @@ export function History() {
                     swipeableRefs.current.push(ref);
                   }
                 }}
-                containerStyle={styles.swipeContainer}
-                renderLeftActions={() => (
-                  <View style={styles.swipeRemove}>
-                    <Trash size={32} color={THEME.COLORS.GREY_100} />
-                  </View>
-                )}
+                // containerStyle={styles.swipeContainer}
+                // renderLeftActions={() => (
+                //   <View style={styles.swipeRemove}>
+                //     <Trash size={32} color={THEME.COLORS.GREY_100} />
+                //   </View>
+                // )}
                 renderRightActions={() => null}
                 overshootLeft={false}
                 leftThreshold={10}
@@ -99,6 +104,7 @@ export function History() {
           ))
         }
       </ScrollView>
+    </ImageBackground>
     </View>
   );
 }

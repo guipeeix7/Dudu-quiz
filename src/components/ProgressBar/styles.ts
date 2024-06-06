@@ -6,7 +6,8 @@ export const styles = StyleSheet.create({
     height: 8,
     width: '100%',
     borderRadius: 8,
-    backgroundColor: THEME.COLORS.GREY_500
+    backgroundColor: THEME.COLORS.GREY_500,
+    marginBottom: 66
   },
   progress: {
     height: 8,

@@ -31,6 +31,7 @@ import { ProgressBar } from '../../components/ProgressBar';
 import { OverlayFeedback } from '../../components/OverlayFeedback';
 import { ManageStorage } from '../../services/ManageStorage';
 import { ShowAnswerButton } from '../../components/ShowAnswerButton';
+import { CancelButton } from '../../components/CancelButton';
 
 interface Params {
   id: string;
@@ -134,8 +135,6 @@ export function Quiz() {
   }, [points]);
 
   async function handleConfirm() {
-    // setCorrectAlternative(quiz.questions[currentQuestion].correct)
-
 
     if (alternativeSelected === null) {
       setIsConfirmed(isConfirmed => 0);
@@ -357,17 +356,17 @@ export function Quiz() {
             </Animated.View>
           </GestureDetector>
 
-          <View style={styles.footer}>
-            <OutlineButton title="Parar" onPress={handleStop} />
+          
+        </Animated.ScrollView>
+        <View style={styles.footer}>
+            <CancelButton title="Parar" onPress={handleStop} />
 
             {(isConfirmed == 0) ? (
               <ShowAnswerButton onPress={showResult} />
             ):
             <ConfirmButton onPress={handleConfirm} />
-
           }
           </View>
-        </Animated.ScrollView>
       </View >
     </ImageBackground>
   );

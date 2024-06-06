@@ -13,7 +13,7 @@ export const styles = StyleSheet.create({
   },
   swipeContainer: {
     width: '100%',
-    height: 90,
+    height: 120,
     backgroundColor: THEME.COLORS.DANGER_LIGHT,
     borderRadius: 6,
     marginBottom: 12,
@@ -25,5 +25,13 @@ export const styles = StyleSheet.create({
     backgroundColor: THEME.COLORS.DANGER_LIGHT,
     alignItems: 'center',
     justifyContent: 'center'
+  },
+  
+  background: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    width: '100%',
+    height: '100%',
   }
 });

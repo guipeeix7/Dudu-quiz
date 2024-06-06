@@ -9,14 +9,14 @@ export const styles = StyleSheet.create({
       padding: 20,
     },
     headerLogo: {
-      fontSize: 40,
+      fontSize: 60,
       textAlign: 'center',
       marginBottom: 30,
       color: '#fff',
     },
     subHeader:{
       
-      fontSize: 25,
+      fontSize: 40,
       textAlign: 'center',
       marginBottom: 30,
       color: '#98c66f',
@@ -33,6 +33,7 @@ export const styles = StyleSheet.create({
       borderWidth: 1,
       borderRadius: 25,
       paddingHorizontal: 10,
+      width:500,
       marginBottom: 10,
       backgroundColor: '#fff',
     },
@@ -40,12 +41,13 @@ export const styles = StyleSheet.create({
       fontSize: 20,
       marginLeft: 10,
       marginBottom:5,
+      alignItems:'flex-start',
       color: '#98c66f',
-
     },
     button: {
-      marginTop:40,
+      marginTop:100,
       height: 50,
+      width:500,
       backgroundColor: '#99c46e',
       borderRadius: 25,
       justifyContent: 'center',

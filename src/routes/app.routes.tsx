@@ -4,6 +4,7 @@ import { Home } from '../screens/Home';
 import { Quiz } from '../screens/Quiz';
 import { Finish } from '../screens/Finish';
 import { History } from '../screens/History';
+import { InitQuizz } from '../screens/InitQuiz';
 
 const { Navigator, Screen, Group } = createNativeStackNavigator();
 
@@ -15,6 +16,11 @@ export function AppRoutes() {
       }}
     >
       
+      
+      <Screen
+        name="initQuizz"
+        component={InitQuizz}
+      />
       <Screen
         name="identify"
         component={Identify}
