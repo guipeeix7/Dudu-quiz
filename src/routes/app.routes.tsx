@@ -5,6 +5,7 @@ import { Quiz } from '../screens/Quiz';
 import { Finish } from '../screens/Finish';
 import { History } from '../screens/History';
 import { InitQuizz } from '../screens/InitQuiz';
+import { GenerateWinner } from '../screens/GenerateWinner';
 
 const { Navigator, Screen, Group } = createNativeStackNavigator();
 
@@ -30,7 +31,10 @@ export function AppRoutes() {
         component={Home}
       />
 
-
+      <Screen
+        name="sortWinner"
+        component={GenerateWinner}
+      />
       <Group screenOptions={{ gestureEnabled: false }}>
         <Screen
           name="quiz"

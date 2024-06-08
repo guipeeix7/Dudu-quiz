@@ -32,6 +32,7 @@ import { OverlayFeedback } from '../../components/OverlayFeedback';
 import { ManageStorage } from '../../services/ManageStorage';
 import { ShowAnswerButton } from '../../components/ShowAnswerButton';
 import { CancelButton } from '../../components/CancelButton';
+import { useFonts } from 'expo-font';
 
 interface Params {
   id: string;
@@ -60,8 +61,12 @@ export function Quiz() {
 
   const route = useRoute();
 
-    const { id,userId  } = route.params as Params;
-  
+  const { id,userId  } = route.params as Params;
+  const [fontsLoaded] = useFonts({
+    'PlusJakartaSans-ExtraBoldItalic': require('./../../../assets/fonts/PlusJakartaSans-ExtraBoldItalic.ttf'),
+    'TenorSans-Regular': require('./../../../assets/fonts/TenorSans-Regular.ttf'),
+  });
+
   async function playSound(isCorrect: boolean) {
     const file = isCorrect
       ? require('../../assets/correct.mp3')
@@ -134,6 +139,12 @@ export function Quiz() {
     })();
   }, [points]);
 
+    
+  // if (!fontsLoaded) {
+  //   return (
+  //     <Loading />
+  //   );
+  // }
   async function handleConfirm() {
 
     if (alternativeSelected === null) {

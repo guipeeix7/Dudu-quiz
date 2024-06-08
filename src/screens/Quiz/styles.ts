@@ -22,7 +22,7 @@ export const styles = StyleSheet.create({
   title: {
     fontFamily: THEME.FONTS.BOLD,
     color: THEME.COLORS.GREEN_0,
-    fontSize: 60,
+    fontSize: 68,
     marginBottom: 7,
     textAlign: 'center'
   },
@@ -38,5 +38,6 @@ export const styles = StyleSheet.create({
     alignItems: 'center',
     width: '100%',
     height: '100%',
-  }
+  },
+  
 });

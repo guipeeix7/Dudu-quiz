@@ -12,10 +12,11 @@ export const styles = StyleSheet.create({
     borderRadius: 12,
     padding: 22,
   },
-  title: {
-    fontFamily: 'Roboto_700Bold',
+  title: {      
+    
+    fontFamily:'PlusJakartaSans-ExtraBoldItalic',
     color: THEME.COLORS.WHITE,
-    fontSize: 18,
+    fontSize: 30,
     textAlign: 'center',
     marginBottom: 36
   },

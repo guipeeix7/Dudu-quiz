@@ -9,11 +9,12 @@ import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { ManageStorage } from './src/services/ManageStorage';
 
 export default function App() {
-  const [fontsLoaded] = useFonts({ Roboto_400Regular, Roboto_700Bold });
-  
-  // let manageStorage = new ManageStorage('');
-  // manageStorage.clearAsyncStorage();
+  const [fontsLoaded] = useFonts({ Roboto_400Regular, Roboto_700Bold,
+    'Inter-Black': require('./assets/fonts/PlusJakartaSans-ExtraBoldItalic.ttf'),
 
+   });
+  
+  
   if (!fontsLoaded) {
     return (
       <Loading />

@@ -35,5 +35,13 @@
         "projectId": "b82ef938-0a37-447b-a24c-6c642b4be56b"
       }
     }
-  }
+  },
+  "plugins": [
+    [
+      "expo-font",
+      {
+        "fonts": ["./assets/fonts/PlusJakartaSans-ExtraBoldItalic.ttf", "./assets/fonts/TenorSans-Regular"]
+      }
+    ]
+  ]  
 }

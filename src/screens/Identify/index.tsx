@@ -23,6 +23,8 @@ import * as Haptics from "expo-haptics";
 import { ManageStorage } from "../../services/ManageStorage";
 import CircleOfDots from "../../components/CircleOfDots";
 import { BackgroundImage } from "react-native-elements/dist/config";
+import { useFonts } from "expo-font";
+import { Loading } from "../../components/Loading";
 
 export function Identify() {
   const [name, setName] = React.useState("");
@@ -30,7 +32,16 @@ export function Identify() {
   const [phone, setPhone] = React.useState("");
   const { navigate } = useNavigation();
   const shake = useSharedValue(0);
-
+  const [fontsLoaded] = useFonts({
+    'PlusJakartaSans-ExtraBoldItalic': require('./../../../assets/fonts/PlusJakartaSans-ExtraBoldItalic.ttf'),
+    'TenorSans-Regular': require('./../../../assets/fonts/TenorSans-Regular.ttf'),
+  });
+    
+  if (!fontsLoaded) {
+    return (
+      <Loading />
+    );
+  }
   async function shakeAnimation() {
     await Haptics.notificationAsync(Haptics.NotificationFeedbackType.Error);
 

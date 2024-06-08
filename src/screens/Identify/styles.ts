@@ -11,15 +11,19 @@ export const styles = StyleSheet.create({
     headerLogo: {
       fontSize: 60,
       textAlign: 'center',
+      fontFamily:'TenorSans-Regular',
       marginBottom: 30,
       color: '#fff',
     },
     subHeader:{
-      
+      fontFamily: "PlusJakartaSans-ExtraBoldItalic",
       fontSize: 40,
       textAlign: 'center',
       marginBottom: 30,
       color: '#98c66f',
+      textShadowColor: 'rgba(0, 0, 0, 0.9)',
+      textShadowOffset: {width: -1, height: 1},
+      textShadowRadius: 10
     },
     card: {
       padding: 20,
@@ -38,7 +42,8 @@ export const styles = StyleSheet.create({
       backgroundColor: '#fff',
     },
     inputLabel:{
-      fontSize: 20,
+      fontFamily: "PlusJakartaSans-ExtraBoldItalic",
+      fontSize: 24,
       marginLeft: 10,
       marginBottom:5,
       alignItems:'flex-start',

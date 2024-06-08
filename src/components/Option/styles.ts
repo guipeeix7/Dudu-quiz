@@ -20,8 +20,8 @@ export const styles = StyleSheet.create({
   },
   title: {
     color: THEME.COLORS.GREY_100,
-    fontFamily: 'Roboto_400Regular',
-    fontSize: 14,
+    fontFamily: "PlusJakartaSans-ExtraBoldItalic",
+    fontSize: 22,
     marginRight: 8,
     flex: 1,
   },

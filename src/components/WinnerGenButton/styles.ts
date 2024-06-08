@@ -6,7 +6,7 @@ export const styles = StyleSheet.create({
     flex: 1,
     minHeight: 56,
     maxHeight: 56,
-    borderRadius: 50,
+    borderRadius: 6,
     alignItems: 'center',
     justifyContent: 'center',
     backgroundColor: THEME.COLORS.BRAND_MID,
@@ -15,7 +15,7 @@ export const styles = StyleSheet.create({
   },
   title: {
     color: THEME.COLORS.WHITE,
-    fontFamily: "PlusJakartaSans-ExtraBoldItalic",
+    fontFamily: 'Roboto_700Bold',
     fontSize: 16,
     marginRight: 7
   },

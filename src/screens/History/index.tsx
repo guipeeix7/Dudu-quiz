@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from 'react';
 import { useNavigation } from '@react-navigation/native';
-import { View, ScrollView, Alert, ImageBackground } from 'react-native';
+import { View, ScrollView, Alert, ImageBackground, TouchableOpacity } from 'react-native';
 import { HouseLine, Trash } from 'phosphor-react-native';
 import Animated, { Layout, SlideInRight, SlideOutRight } from 'react-native-reanimated';
 import { Swipeable } from 'react-native-gesture-handler';
@@ -12,10 +12,14 @@ import { styles } from './styles';
 import { historyGetAll, historyRemove } from '../../storage/quizHistoryStorage';
 import { Loading } from '../../components/Loading';
 import { THEME } from '../../styles/theme';
+import { Button } from '../../components/Button';
+import { WinnerGenButton } from '../../components/WinnerGenButton';
+import { Text } from 'react-native-elements';
 
 export function History() {
   const [isLoading, setIsLoading] = useState(true);
   const [history, setHistory] = useState<HistoryProps[]>([]);
+  const { navigate } = useNavigation();
 
   const swipeableRefs = useRef<Swipeable[]>([]);
   
@@ -68,6 +72,15 @@ export function History() {
         title="Histórico"
         subtitle={`Resultados passados ${'\n'}`}
       />
+      
+      <TouchableOpacity
+          onPress={() => navigate('sortWinner')}
+          style={styles.button}
+        >
+          <Text style={styles.buttonText}>
+            Sortear Vencedor
+          </Text>
+      </TouchableOpacity>
 
       <ScrollView
         contentContainerStyle={styles.history}

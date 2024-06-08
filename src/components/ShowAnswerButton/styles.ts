@@ -6,7 +6,7 @@ export const styles = StyleSheet.create({
     flex: 1,
     minHeight: 56,
     maxHeight: 56,
-    borderRadius: 6,
+    borderRadius: 50,
     alignItems: 'center',
     justifyContent: 'center',
     backgroundColor: THEME.COLORS.BRAND_MID,

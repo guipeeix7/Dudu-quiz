@@ -33,5 +33,19 @@ export const styles = StyleSheet.create({
     alignItems: 'center',
     width: '100%',
     height: '100%',
-  }
+  },
+  
+  button: {
+    marginTop:36,
+    height: 50,
+    width:500,
+    backgroundColor: THEME.COLORS.BRAND_MID,
+    borderRadius: 25,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  buttonText: {
+    color: '#fff',
+    fontSize: 18,
+  },
 });

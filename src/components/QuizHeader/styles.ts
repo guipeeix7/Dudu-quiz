@@ -23,11 +23,14 @@ export const styles = StyleSheet.create({
     marginTop: 20,
   },
   title: {
-    fontFamily: THEME.FONTS.BOLD,
+    fontFamily: "PlusJakartaSans-ExtraBoldItalic",
     color: THEME.COLORS.GREEN_QZZ,
     fontSize: 36,
   },
   question: {
+    fontSize: 24,
+    fontFamily: "PlusJakartaSans-ExtraBoldItalic",
+
     color: '#C4C4CC'
   },
   length: {
