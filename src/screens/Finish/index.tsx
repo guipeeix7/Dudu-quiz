@@ -8,18 +8,37 @@ import axiosRetry from 'axios-retry';
 
 import { styles } from './styles';
 import { useEffect } from 'react';
+import db from "../../../sqlite/sqlite";
+import { useUserResponse } from '../../models/users_response';
 
 interface Params {
   total: string;
   points: string;
+  userId: number;
 }
 
 export function Finish() {
   const route = useRoute();
-  const { points, total } = route.params as Params;
+  const { points, total, userId } = route.params as Params;
+  const { responseHistoryDataByUserId, currentUserResponseHistory, userResponseHistoryData, userResponseHistory } = useUserResponse();
 
   const { navigate } = useNavigation();
 
+
+  useEffect(() => {
+    
+    console.log()
+    getUserResult()
+  
+  }, [])
+  
+
+  async function getUserResult(){
+    await responseHistoryDataByUserId(db, userId)
+    await userResponseHistoryData(db)
+    console.log('all data', userResponseHistory)
+    console.log('userData',currentUserResponseHistory) 
+  }
 
   const sendData = async (url:string, data:any) => {
     try {
@@ -27,7 +46,6 @@ export function Finish() {
       console.log('Data sent successfully');
     } catch (error) {
       console.error('Error sending data', error);
-      // Store data locally on failure
     }
   };
 
@@ -46,7 +64,7 @@ export function Finish() {
         </Text>
 
         <Text style={styles.subtitle}>
-          Você acertou {points} de {total} questões
+          Você acertou {currentUserResponseHistory['correctCount']} de {total} questões
         </Text>
         <Text style={styles.text}>PARABÉNS,</Text>
         <Text style={styles.text}>

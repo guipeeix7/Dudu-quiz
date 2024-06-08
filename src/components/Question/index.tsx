@@ -69,7 +69,7 @@ export function Question({
 
   useEffect(() => {    
 
-    console.log("CURRENT STATE", correctAlternative);
+    // console.log("CURRENT STATE", correctAlternative);
   }, []);
 
   return (

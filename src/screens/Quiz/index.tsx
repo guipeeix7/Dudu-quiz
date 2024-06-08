@@ -33,7 +33,10 @@ import { ManageStorage } from '../../services/ManageStorage';
 import { ShowAnswerButton } from '../../components/ShowAnswerButton';
 import { CancelButton } from '../../components/CancelButton';
 import { useFonts } from 'expo-font';
+import * as SQLite from 'expo-sqlite';
 
+import { useUserResponse } from "../../models/users_response";
+import db from "../../../sqlite/sqlite";
 interface Params {
   id: string;
   userId: number
@@ -44,7 +47,9 @@ type QuizProps = typeof QUIZ[0];
 const CARD_INCLINATION = 10;
 const CARD_SKIP_AREA = -200;
 
+
 export function Quiz() {
+  
   const [points, setPoints] = useState(0);
   const [isLoading, setIsLoading] = useState(true);
   const [currentQuestion, setCurrentQuestion] = useState(0);
@@ -60,6 +65,7 @@ export function Quiz() {
   const { navigate } = useNavigation();
 
   const route = useRoute();
+  const { usersResponses, getUsersResponse,addUserResponse, deleteUserResponse, checkUserResponseAlreadyExists, updateResponse, userResponseAlreadyExists } = useUserResponse();
 
   const { id,userId  } = route.params as Params;
   const [fontsLoaded] = useFonts({
@@ -146,7 +152,6 @@ export function Quiz() {
   //   );
   // }
   async function handleConfirm() {
-
     if (alternativeSelected === null) {
       setIsConfirmed(isConfirmed => 0);
 
@@ -160,13 +165,25 @@ export function Quiz() {
     }
     
     let manageStorage = new ManageStorage('users_questions');
+
+    await checkUserResponseAlreadyExists(db,userId, currentQuestion);
+    console.log("CORRECTNESSS", correct)
+
+    if(userResponseAlreadyExists){
+      console.log('updated')
+      await updateResponse(db, userId, currentQuestion, correct)
+    }
+    else{
+      console.log('inserted')
+      await addUserResponse(db, userId, currentQuestion, correct)
+    }
     try {
       manageStorage.addData([{userId: userId, questionId :currentQuestion, isCorrect: correct }]); 
     } catch (error) {
       console.error("Error saving users to AsyncStorage", error);
     }
-    setIsConfirmed(isConfirmed => 0);
     
+    setIsConfirmed(isConfirmed => 0);    
     setAlternativeSelected(null);
   }
 
@@ -315,13 +332,16 @@ export function Quiz() {
 
   useEffect(() => {
     // const quizSelected = QUIZ.filter(item => item.id === id)[0];
-    const quizSelected = getQuestionsByLevel(QUIZ, 3)[0];
-    
-    
+    const quizSelected = getQuestionsByLevel(QUIZ, 1)[0];
+  
     setQuiz(quizSelected);
     setIsLoading(false);
   }, []);
 
+  useEffect(() => {
+    getUsersResponse(db)
+  }, []);
+  
   useEffect(() => {
     const backHandler = BackHandler.addEventListener(
       'hardwareBackPress',

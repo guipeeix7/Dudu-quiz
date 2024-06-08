@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import {
   SafeAreaView,
   Text,
@@ -25,23 +25,18 @@ import CircleOfDots from "../../components/CircleOfDots";
 import { BackgroundImage } from "react-native-elements/dist/config";
 import { useFonts } from "expo-font";
 import { Loading } from "../../components/Loading";
+import { useUsers } from "../../models/users";
+import db from "../../../sqlite/sqlite";
 
 export function Identify() {
+  const { users,getUsers,addUser, user, checkUserExistsByEmail, deleteUser,getUserIdByEmail, updateUserByEmail} = useUsers();
+
   const [name, setName] = React.useState("");
   const [email, setEmail] = React.useState("");
   const [phone, setPhone] = React.useState("");
   const { navigate } = useNavigation();
   const shake = useSharedValue(0);
-  const [fontsLoaded] = useFonts({
-    'PlusJakartaSans-ExtraBoldItalic': require('./../../../assets/fonts/PlusJakartaSans-ExtraBoldItalic.ttf'),
-    'TenorSans-Regular': require('./../../../assets/fonts/TenorSans-Regular.ttf'),
-  });
-    
-  if (!fontsLoaded) {
-    return (
-      <Loading />
-    );
-  }
+ 
   async function shakeAnimation() {
     await Haptics.notificationAsync(Haptics.NotificationFeedbackType.Error);
 
@@ -82,19 +77,38 @@ export function Identify() {
       return false;
     }
     let manageStorage =  new ManageStorage('users'); 
-    
-    // manageStorage.clearAsyncStorage();
-    
-    let userId = await manageStorage.countData();
+        
+    // let userId = await manageStorage.countData();
 
+    let hasUser = await checkUserExistsByEmail(db, email);
+    if(!hasUser){
+      await addUser(db, name,email,phone );
+      console.log('creates')
+
+    }
+    else{
+      await updateUserByEmail(db, name,email,phone)
+      console.log('updated')
+    }
+
+    await getUserIdByEmail(db, email)
+    let userId = user.userId; 
+    
     try {
+      manageStorage.clearAsyncStorage();
+
       let newUserData = [{userId:userId , name: name, email: email, phone: phone }];
       manageStorage.addData(newUserData);
     } catch (error) {
       Alert.alert("Error", "Failed to save the data to the storage");
     }
+    console.log(users)
     navigate("quiz", { id: "1", userId:userId });
   };
+
+  useEffect(() => {
+    getUsers(db);
+  }, []);
 
   return (
     <ImageBackground

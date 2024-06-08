@@ -56,4 +56,13 @@ export class ManageStorage{
     clearAsyncStorage = async() => {
         AsyncStorage.clear();
     }
+
+    clearAsyncStorageKey = async () => {
+        try {
+          await AsyncStorage.removeItem(this.storageName);
+          console.log(`Key "${this.storageName}" removed successfully.`);
+        } catch (error) {
+          console.error(`Error removing key "${this.storageName}":`, error);
+        }
+      };
 }

@@ -15,8 +15,12 @@ import { THEME } from '../../styles/theme';
 import { Button } from '../../components/Button';
 import { WinnerGenButton } from '../../components/WinnerGenButton';
 import { Text } from 'react-native-elements';
+import { useUserResponse } from '../../models/users_response';
+import db from '../../../sqlite/sqlite';
 
 export function History() {
+  const { userResponseHistoryData, usersResponses, getUsersResponse,addUserResponse, deleteUserResponse,  checkUserResponseAlreadyExists, updateResponse, userResponseAlreadyExists } = useUserResponse();
+
   const [isLoading, setIsLoading] = useState(true);
   const [history, setHistory] = useState<HistoryProps[]>([]);
   const { navigate } = useNavigation();
@@ -26,6 +30,8 @@ export function History() {
 
   async function fetchHistory() {
     const response = await historyGetAll();
+    await userResponseHistoryData(db)
+    
     setHistory(response);
     setIsLoading(false);
   }
