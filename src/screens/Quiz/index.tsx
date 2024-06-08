@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useLayoutEffect, useState } from 'react';
 import { Alert, BackHandler, ImageBackground, Text, View } from 'react-native';
 import Animated, {
   useAnimatedStyle,
@@ -37,6 +37,7 @@ import * as SQLite from 'expo-sqlite';
 
 import { useUserResponse } from "../../models/users_response";
 import db from "../../../sqlite/sqlite";
+import { useUsers } from '../../models/users';
 interface Params {
   id: string;
   userId: number
@@ -66,30 +67,57 @@ export function Quiz() {
 
   const route = useRoute();
   const { usersResponses, getUsersResponse,addUserResponse, deleteUserResponse, checkUserResponseAlreadyExists, updateResponse, userResponseAlreadyExists } = useUserResponse();
+  const { users,getUsers,addUser, user, checkUserExistsByEmail, deleteUser,getUserIdByEmail, updateUserByEmail} = useUsers();
 
   const { id,userId  } = route.params as Params;
-  const [fontsLoaded] = useFonts({
-    'PlusJakartaSans-ExtraBoldItalic': require('./../../../assets/fonts/PlusJakartaSans-ExtraBoldItalic.ttf'),
-    'TenorSans-Regular': require('./../../../assets/fonts/TenorSans-Regular.ttf'),
-  });
 
-  async function playSound(isCorrect: boolean) {
-    const file = isCorrect
-      ? require('../../assets/correct.mp3')
-      : require('../../assets/wrong.mp3');
+  useLayoutEffect(() => {
+    //check local token or something
+ // const quizSelected = QUIZ.filter(item => item.id === id)[0];
+    getUsersResponse(db)
 
-    const { sound } = await Audio.Sound.createAsync(file, { shouldPlay: true });
+    const quizSelected = getQuestionsByLevel(QUIZ, 1)[0];
 
-    await sound.setPositionAsync(0);
-    await sound.playAsync();
-  }
+    setQuiz(quizSelected);
+    // console.log("ARROBAAAAAA",quiz.questions.length)
 
-  function showResult(){
+    setIsLoading(false);
+  }, []);
+
+
+  
+  useEffect(() => {
+    const backHandler = BackHandler.addEventListener(
+      'hardwareBackPress',
+      handleStop,
+    );
+
+    return () => backHandler.remove();
+  }, []);
+
+
+  async function showResult(){
+    if (alternativeSelected === null) {
+      setIsConfirmed(isConfirmed => 0);
+
+      return handleSkipConfirm();
+    }
+
     let correct = (quiz.questions[currentQuestion].correct === alternativeSelected) ? 1 : 0; 
 
     if (correct) {
       setPoints((points) => points+1 );
+
       setAlternativeSelected(null)
+      setIsConfirmed(isConfirmed=>1)
+      await setStatusReply(1);      
+      
+      await storeQuestionAnswer(correct);  
+      await setTimeout(async () => {
+        await handleNextQuestion();
+        console.log("expecting first")
+        setIsConfirmed(isConfirmed=>0)
+      },1800)
     }
     else{
       setIsConfirmed(isConfirmed=>1)
@@ -123,52 +151,13 @@ export function Quiz() {
   async function handleNextQuestion() {
     if (currentQuestion < quiz.questions.length - 1) {
       await setCurrentQuestion(prevState => prevState + 1)
-
+      console.log("expecting first")
     } else {
       await handleFinished();
     }
   }
 
-  useEffect(() => {    
-    (async () => {
-
-      if(points > 0 ){      
-        setIsConfirmed(isConfirmed=>1)
-
-        await setStatusReply(1);
-        
-        setTimeout(() => {
-          handleNextQuestion();
-        },1800)
-        setIsConfirmed(isConfirmed=>0)
-      }
-    })();
-  }, [points]);
-
-    
-  // if (!fontsLoaded) {
-  //   return (
-  //     <Loading />
-  //   );
-  // }
-  async function handleConfirm() {
-    if (alternativeSelected === null) {
-      setIsConfirmed(isConfirmed => 0);
-
-      return handleSkipConfirm();
-    }
-    let correct = (quiz.questions[currentQuestion].correct === alternativeSelected) ? 1 : 0; 
-
-    if (!correct) {
-      setStatusReply(2);
-      shakeAnimation();
-    }
-    
-    let manageStorage = new ManageStorage('users_questions');
-
-    await checkUserResponseAlreadyExists(db,userId, currentQuestion);
-    console.log("CORRECTNESSS", correct)
-
+  async function storeQuestionAnswer(correct:number){
     if(userResponseAlreadyExists){
       console.log('updated')
       await updateResponse(db, userId, currentQuestion, correct)
@@ -177,6 +166,22 @@ export function Quiz() {
       console.log('inserted')
       await addUserResponse(db, userId, currentQuestion, correct)
     }
+  }
+
+  async function handleConfirm() {
+    let correct = (quiz.questions[currentQuestion].correct === alternativeSelected) ? 1 : 0; 
+
+    if (!correct) {
+      setStatusReply(2);
+      shakeAnimation();
+    }
+    console.log("POIIINTSS",points)
+
+    let manageStorage = new ManageStorage('users_questions');
+    await checkUserResponseAlreadyExists(db,userId, currentQuestion);
+
+    await storeQuestionAnswer(correct);
+    
     try {
       manageStorage.addData([{userId: userId, questionId :currentQuestion, isCorrect: correct }]); 
     } catch (error) {
@@ -306,7 +311,6 @@ export function Quiz() {
 
   const dragStyles = useAnimatedStyle(() => {
     const rotateZ = cardPosition.value / CARD_INCLINATION;
-
     return {
       transform: [
         { translateX: cardPosition.value },
@@ -330,31 +334,9 @@ export function Quiz() {
     return indices.slice(0, numQuestions);
   }
 
-  useEffect(() => {
-    // const quizSelected = QUIZ.filter(item => item.id === id)[0];
-    const quizSelected = getQuestionsByLevel(QUIZ, 1)[0];
-  
-    setQuiz(quizSelected);
-    setIsLoading(false);
-  }, []);
-
-  useEffect(() => {
-    getUsersResponse(db)
-  }, []);
-  
-  useEffect(() => {
-    const backHandler = BackHandler.addEventListener(
-      'hardwareBackPress',
-      handleStop,
-    );
-
-    return () => backHandler.remove();
-  }, []);
-
   if (isLoading) {
     return <Loading />
   }
-
   return (
     
       <ImageBackground
@@ -408,7 +390,7 @@ export function Quiz() {
             <CancelButton title="Parar" onPress={handleStop} />
 
             {(isConfirmed == 0) ? (
-              <ShowAnswerButton onPress={showResult} />
+              <ShowAnswerButton onPress={ showResult  } />
             ):
             <ConfirmButton onPress={handleConfirm} />
           }

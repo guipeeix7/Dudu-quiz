@@ -61,7 +61,7 @@ export function Option({
     // if((alternativeSelected == index) && isConfirmed) return THEME.COLORS.WHITE;
      
     if(!isConfirmed) return THEME.COLORS.WHITE; 
-    else if(index == correctAlternative ){
+    else if(index == correctAlternative && alternativeSelected != null ){
       return THEME.COLORS.STAR_GREEN; 
     }
     else if(alternativeSelected != correctAlternative && alternativeSelected == index ){
@@ -76,7 +76,7 @@ export function Option({
       style={[
         styles.container,
         checked && styles.checked,
-        index == correctAlternative && isConfirmed ? styles.checked : [],
+        alternativeSelected != null && index == correctAlternative && isConfirmed ? styles.checked : [],
         correctAlternative != index && isConfirmed && alternativeSelected == index ? styles.wrong : [],
       ]}
       {...rest}

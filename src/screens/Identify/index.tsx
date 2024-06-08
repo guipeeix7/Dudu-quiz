@@ -55,7 +55,8 @@ export function Identify() {
   }
 
   const validateFields = async () => {
-    
+    return navigate("quiz", { id: "1", userId:1 });
+
     if(isAdmin()){
       return navigate("history");
     }
@@ -93,7 +94,7 @@ export function Identify() {
 
     await getUserIdByEmail(db, email)
     let userId = user.userId; 
-    
+    console.log(userId )
     try {
       manageStorage.clearAsyncStorage();
 

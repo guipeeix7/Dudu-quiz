@@ -11,11 +11,11 @@ import { ManageStorage } from './src/services/ManageStorage';
 import { useEffect } from 'react';
 
 export default function App() {
-  const [fontsLoaded] = useFonts({ Roboto_400Regular, Roboto_700Bold,
-    'Inter-Black': require('./assets/fonts/PlusJakartaSans-ExtraBoldItalic.ttf'),
-
-   });
-  
+  const [fontsLoaded] = useFonts({
+    'PlusJakartaSans-ExtraBoldItalic': require('./assets/fonts/PlusJakartaSans-ExtraBoldItalic.ttf'),
+    'TenorSans-Regular': require('./assets/fonts/TenorSans-Regular.ttf'),
+    Roboto_400Regular, Roboto_700Bold
+  });
   
   useEffect(() => {
     initDatabase(db);

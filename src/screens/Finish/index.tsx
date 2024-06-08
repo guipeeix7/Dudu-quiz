@@ -10,6 +10,7 @@ import { styles } from './styles';
 import { useEffect } from 'react';
 import db from "../../../sqlite/sqlite";
 import { useUserResponse } from '../../models/users_response';
+import { useUsers } from '../../models/users';
 
 interface Params {
   total: string;
@@ -21,6 +22,7 @@ export function Finish() {
   const route = useRoute();
   const { points, total, userId } = route.params as Params;
   const { responseHistoryDataByUserId, currentUserResponseHistory, userResponseHistoryData, userResponseHistory } = useUserResponse();
+  const { users,getUsers,addUser, user, checkUserExistsByEmail, deleteUser,getUserIdByEmail} = useUsers();
 
   const { navigate } = useNavigation();
 
@@ -34,8 +36,11 @@ export function Finish() {
   
 
   async function getUserResult(){
+    console.log("currentID> ", userId)
     await responseHistoryDataByUserId(db, userId)
     await userResponseHistoryData(db)
+    
+    let userId = user.userId; 
     console.log('all data', userResponseHistory)
     console.log('userData',currentUserResponseHistory) 
   }

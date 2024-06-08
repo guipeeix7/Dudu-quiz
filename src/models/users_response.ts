@@ -50,7 +50,9 @@ export function useUserResponse() {
   
 
   const userResponseHistoryData = (db: SQLite.Database) => {
-    db.transaction((tx) => {
+
+    db.transaction((tx) => {    
+
         tx.executeSql(
           `SELECT users.*, COUNT(user_response.isCorrect) AS correctCount 
             FROM users
@@ -60,7 +62,6 @@ export function useUserResponse() {
           [],
           
           (_, { rows: { _array } }) => {
-            // console.log(_array)
             setUsersResponseHistory(_array)
           }
         )
@@ -68,7 +69,9 @@ export function useUserResponse() {
   };
 
   const responseHistoryDataByUserId = (db: SQLite.Database, userId:number) => {
+
     db.transaction((tx) => {
+      
         tx.executeSql(
           `SELECT users.*, COUNT(user_response.isCorrect) AS correctCount 
             FROM users
@@ -78,7 +81,8 @@ export function useUserResponse() {
           [userId],
           
           (_, { rows: { _array } }) => {
-            console.log("AAAAAAAAAAAAAAAAA",_array)
+            console.log("AAAAAAAAAAAAAAAAA", _array)
+
             setCurrentUsersResponseHistory(_array)
           }
         )
