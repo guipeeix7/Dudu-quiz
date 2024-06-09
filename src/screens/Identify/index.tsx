@@ -27,10 +27,12 @@ import { useFonts } from "expo-font";
 import { Loading } from "../../components/Loading";
 import { useUsers } from "../../models/users";
 import db from "../../../sqlite/sqlite";
+import { useUserResponse } from "../../models/users_response";
 
 export function Identify() {
   const { users,getUsers,addUser, user, checkUserExistsByEmail, deleteUser,getUserIdByEmail, updateUserByEmail} = useUsers();
-
+  const { clearUsersQuestions} = useUserResponse();
+  
   const [name, setName] = React.useState("");
   const [email, setEmail] = React.useState("");
   const [phone, setPhone] = React.useState("");
@@ -55,7 +57,7 @@ export function Identify() {
   }
 
   const validateFields = async () => {
-    return navigate("quiz", { id: "1", userId:1 });
+    // return navigate("quiz", { id: "1", userId:1 });
 
     if(isAdmin()){
       return navigate("history");
@@ -81,30 +83,37 @@ export function Identify() {
         
     // let userId = await manageStorage.countData();
 
-    let hasUser = await checkUserExistsByEmail(db, email);
-    if(!hasUser){
-      await addUser(db, name,email,phone );
-      console.log('creates')
+    await checkUserExistsByEmail(db, email).then((hasUser) => {
+      if(!hasUser){
+        addUser(db, name,email,phone );
+        console.log('creates')
+  
+      }
+      else{
+        updateUserByEmail(db, name,email,phone)
+        console.log('updated')
+      }
+    }).then(()=>{
+      let userId; 
+      getUserIdByEmail(db, email).then((result:any) => {
+        userId = result.userId;        
+        clearUsersQuestions(db, userId)
 
-    }
-    else{
-      await updateUserByEmail(db, name,email,phone)
-      console.log('updated')
-    }
+        try {
+          manageStorage.clearAsyncStorage();
+  
+          let newUserData = [{userId:userId , name: name, email: email, phone: phone }];
+          manageStorage.addData(newUserData);
+        } catch (error) {
+          Alert.alert("Error", "Failed to save the data to the storage");
+        }
+        console.log("IDENTIFIER ID", Number(userId))
+        navigate("quiz", { id: "1", userId:Number(userId) });
+      })
+    })
+    
 
-    await getUserIdByEmail(db, email)
-    let userId = user.userId; 
-    console.log(userId )
-    try {
-      manageStorage.clearAsyncStorage();
-
-      let newUserData = [{userId:userId , name: name, email: email, phone: phone }];
-      manageStorage.addData(newUserData);
-    } catch (error) {
-      Alert.alert("Error", "Failed to save the data to the storage");
-    }
-    console.log(users)
-    navigate("quiz", { id: "1", userId:userId });
+    
   };
 
   useEffect(() => {

@@ -52,12 +52,22 @@ export function useUsers() {
   };
 
   const getUserIdByEmail = async (db: SQLite.Database, email:string) => {
-    db.readTransaction( (tx) =>
-        tx.executeSql("SELECT * FROM users WHERE email = email;", [], (_, {rows: {_array}}) =>{
-                setUser(_array[0])
-            }
-        )        
-    );
+    return new Promise((resolve, reject) => db.transaction(tx => {
+      tx.executeSql(`SELECT * FROM users WHERE email = ?;`, [email], (_, { rows: {_array} }) => {
+          resolve(_array[0])
+      }), (sqlError:any) => {
+          console.log(sqlError);
+      }}, (txError) => {
+      console.log(txError);
+    }))
+    // db.readTransaction( (tx) =>
+    //     tx.executeSql("SELECT * FROM users WHERE email = ?;", [email], (_, {rows: {_array}}) =>{
+    //             setUser(_array[0])
+    //             console.log(_array[0])
+    //             return _array[0]
+    //         }
+    //     )        
+    // );
   };
 
   const deleteUser = (db: SQLite.Database, id: number) => {

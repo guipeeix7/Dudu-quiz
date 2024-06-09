@@ -10,7 +10,13 @@ const db = SQLite.openDatabase("myDatabase.db");
 export function initDatabase(db: SQLite.Database) {
   db.transaction((tx) => {
     tx.executeSql(
-      "CREATE TABLE IF NOT EXISTS users (userId INTEGER PRIMARY KEY AUTOINCREMENT, name VARCHAR(255),  email VARCHAR(255), phone VARCHAR(21) ); CREATE TABLE IF NOT EXISTS user_response (userId INTEGER, questionId INT,  isCorrect INT);"
+      "CREATE TABLE IF NOT EXISTS users (userId INTEGER PRIMARY KEY AUTOINCREMENT, name VARCHAR(255),  email VARCHAR(255), phone VARCHAR(21) ); "
+    );
+
+  });
+  db.transaction((tx) => {
+    tx.executeSql(
+      "CREATE TABLE IF NOT EXISTS user_response (userId INTEGER, questionId INTEGER,  isCorrect INTEGER);"
     );
 
   });

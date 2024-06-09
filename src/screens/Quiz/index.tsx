@@ -97,6 +97,7 @@ export function Quiz() {
 
 
   async function showResult(){
+    console.log("QUIZZ ID:", userId)
     if (alternativeSelected === null) {
       setIsConfirmed(isConfirmed => 0);
 
@@ -141,9 +142,10 @@ export function Quiz() {
       points,
       questions: quiz.questions.length
     });
-
+    console.log("QUIZZZZZZZZZ ID: " , userId)
     navigate('finish', {
       points: String(points),
+      userId: userId,
       total: String(quiz.questions.length),
     });
   }
@@ -166,6 +168,8 @@ export function Quiz() {
       console.log('inserted')
       await addUserResponse(db, userId, currentQuestion, correct)
     }
+    await getUsersResponse(db)
+    console.log("All responses", usersResponses)
   }
 
   async function handleConfirm() {

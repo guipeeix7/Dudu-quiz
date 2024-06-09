@@ -7,7 +7,7 @@ import axios from 'axios';
 import axiosRetry from 'axios-retry';
 
 import { styles } from './styles';
-import { useEffect } from 'react';
+import React, { useEffect, useLayoutEffect } from 'react';
 import db from "../../../sqlite/sqlite";
 import { useUserResponse } from '../../models/users_response';
 import { useUsers } from '../../models/users';
@@ -23,26 +23,32 @@ export function Finish() {
   const { points, total, userId } = route.params as Params;
   const { responseHistoryDataByUserId, currentUserResponseHistory, userResponseHistoryData, userResponseHistory } = useUserResponse();
   const { users,getUsers,addUser, user, checkUserExistsByEmail, deleteUser,getUserIdByEmail} = useUsers();
+  const [userPoints, setUserPoints] = React.useState(0);
 
   const { navigate } = useNavigation();
 
 
-  useEffect(() => {
+  useLayoutEffect(() => {
     
     console.log()
     getUserResult()
-  
+
   }, [])
   
 
   async function getUserResult(){
-    console.log("currentID> ", userId)
-    await responseHistoryDataByUserId(db, userId)
-    await userResponseHistoryData(db)
-    
-    let userId = user.userId; 
-    console.log('all data', userResponseHistory)
-    console.log('userData',currentUserResponseHistory) 
+    // let userId = user.userId; 
+    // console.log("At the end => ",userId )
+    await responseHistoryDataByUserId(db, userId).then((response:any)=> {
+      if(typeof response !== 'undefined' ){
+        console.log( "UserIdData >>> ",response,userId, response.correctCount)
+        setUserPoints(response.correctCount)
+      }
+      else{
+        setUserPoints(0)
+      }
+
+    }) 
   }
 
   const sendData = async (url:string, data:any) => {
@@ -69,7 +75,7 @@ export function Finish() {
         </Text>
 
         <Text style={styles.subtitle}>
-          Você acertou {currentUserResponseHistory['correctCount']} de {total} questões
+          Você acertou {userPoints} de {total} questões
         </Text>
         <Text style={styles.text}>PARABÉNS,</Text>
         <Text style={styles.text}>
