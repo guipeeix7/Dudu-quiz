@@ -56,7 +56,7 @@ export function useUserScore() {
   const userResponseHistoryData = (db: SQLite.Database) => {
     db.transaction((tx) => {
         tx.executeSql(
-          `SELECT users.userId, SUM(user_response.isCorrect) AS correctCount 
+          `SELECT users.userId, SUM(user_response.isCorrect) AS points 
             FROM users
             LEFT JOIN user_response ON users.userId = user_response.userId
             WHERE user_response.isCorrect = 1
@@ -64,7 +64,6 @@ export function useUserScore() {
           [],
           
           (_, { rows: { _array } }) => {
-            console.log("AAAAAAAAAAAAAAAAAAAAAAAA",_array)
           }
         )
       });

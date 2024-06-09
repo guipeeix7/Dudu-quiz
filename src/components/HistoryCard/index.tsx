@@ -25,25 +25,22 @@ export function HistoryCard({ data }: Props) {
   return (
     <View style={styles.container}>
       <View style={styles.subcontainer}>
-        <Text style={styles.title}>
-          {data.title}
+        
+        <Text style={styles.subtitle}>
+          Acertou : {data.points} de 9
         </Text>
         <Text style={styles.subtitle}>
-          Você acertou {data.points} de {data.questions}
+          User Id : {data.userId}
         </Text>
         <Text style={styles.subtitle}>
-          User Id {data.userId}
+          User Name : {data.userName}
         </Text>
         <Text style={styles.subtitle}>
-          User Name {data.userName}
-        </Text>
-        <Text style={styles.subtitle}>
-          Email {data.email}
+          Email : {data.email}
         </Text>
         
       </View>
 
-      <LevelBars level={data.level} />
     </View>
   );
 }

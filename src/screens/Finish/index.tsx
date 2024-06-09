@@ -41,8 +41,8 @@ export function Finish() {
     // console.log("At the end => ",userId )
     await responseHistoryDataByUserId(db, userId).then((response:any)=> {
       if(typeof response !== 'undefined' ){
-        console.log( "UserIdData >>> ",response,userId, response.correctCount)
-        setUserPoints(response.correctCount)
+        console.log( "UserIdData >>> ",response,userId, response.points)
+        setUserPoints(response.points)
       }
       else{
         setUserPoints(0)

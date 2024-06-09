@@ -50,47 +50,27 @@ export function useUserResponse() {
 
 
   const userResponseHistoryData = (db: SQLite.Database) => {
-
-    db.transaction((tx) => {
-
-      tx.executeSql(
-        `SELECT users.*, COUNT(user_response.isCorrect) AS correctCount 
-            FROM users
-            LEFT JOIN user_response ON users.userId = user_response.userId
-            AND user_response.isCorrect = 0
-            GROUP BY users.userId;`,
-        [],
-
-        (_, { rows: { _array } }) => {
-          console.log(_array)
-          setUsersResponseHistory(_array)
-        }
-      )
-    });
+    return new Promise((resolve, reject) => db.transaction(tx => {
+      tx.executeSql(`SELECT users.*, users.name AS userName, COUNT(user_response.isCorrect) AS points 
+          FROM users
+          LEFT JOIN user_response ON users.userId = user_response.userId
+          AND user_response.isCorrect = 1
+          GROUP BY users.userId;`
+      , [],
+      (_, { rows: {_array} }) => {
+        resolve(_array)
+      }),(sqlError:any) => {
+        console.log(sqlError);
+      }},(txError) => {
+        console.log(txError);
+      })
+    )
   };
 
   const responseHistoryDataByUserId = (db: SQLite.Database, userId: number) => {
-    // return new Promise((resolve, reject) => db.transaction(tx => {
-    //   db.transaction((tx) => {
-
-    //     tx.executeSql(
-    //       `SELECT users.*, COUNT(user_response.isCorrect) AS correctCount 
-    //             FROM users
-    //             LEFT JOIN user_response ON users.userId = user_response.userId
-    //             AND user_response.userId = ?
-    //             GROUP BY users.userId;`,
-    //       [userId],
-
-    //       (_, { rows: { _array } }) => {
-    //         console.log("AAAAAAAAAAAAAAAAA", _array)
-
-    //         setCurrentUsersResponseHistory(_array)
-    //       }
-    //     )
-    //   });
-    // }))
+    
     return new Promise((resolve, reject) => db.transaction(tx => {
-      tx.executeSql(`SELECT users.*, COUNT(user_response.isCorrect ) AS correctCount 
+      tx.executeSql(`SELECT users.*, COUNT(user_response.isCorrect ) AS points 
       FROM users
       LEFT JOIN user_response ON users.userId = user_response.userId
       where users.userId = ?
@@ -100,7 +80,7 @@ export function useUserResponse() {
       }), (sqlError:any) => {
           console.log(sqlError);
       }}, (txError) => {
-      console.log(txError);
+         console.log(txError);
     }))
 
   };
@@ -111,7 +91,6 @@ export function useUserResponse() {
         'DELETE FROM user_response WHERE userId = ?;',
         [userId]
       );
-      console.log('executed')
     });
   };
 

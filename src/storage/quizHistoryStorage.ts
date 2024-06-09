@@ -25,6 +25,12 @@ export async function historyGetAll() {
     console.log(history)
 
     return history;
+    
+    // let history;
+    // await userResponseHistoryData(db).then((response:any) => {
+    //   history = response;
+    // });
+
   } catch (error) {
     Alert.alert('Opa', 'Não foi possível obter o histórico.');
 

@@ -18,13 +18,7 @@ import Animated, {
 } from "react-native-reanimated";
 
 import { TextInputMask } from "react-native-masked-text";
-import { Icon } from "react-native-elements";
 import * as Haptics from "expo-haptics";
-import { ManageStorage } from "../../services/ManageStorage";
-import CircleOfDots from "../../components/CircleOfDots";
-import { BackgroundImage } from "react-native-elements/dist/config";
-import { useFonts } from "expo-font";
-import { Loading } from "../../components/Loading";
 import { useUsers } from "../../models/users";
 import db from "../../../sqlite/sqlite";
 import { useUserResponse } from "../../models/users_response";
@@ -79,10 +73,19 @@ export function Identify() {
       );
       return false;
     }
-    let manageStorage =  new ManageStorage('users'); 
-        
-    // let userId = await manageStorage.countData();
 
+    // const phoneRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    const cleaned = phone.replace(/\D/g, '')
+    const phoneRegex = /^(\d{2})(\d{8,9})$/;
+    const match = cleaned.match(phoneRegex);
+
+    if (!match) {
+      Alert.alert(
+        "Alert",
+        "Por favor preencha com um número de telefone válido"
+      );
+      return false;
+    }
     await checkUserExistsByEmail(db, email).then((hasUser) => {
       if(!hasUser){
         addUser(db, name,email,phone );
@@ -99,21 +102,9 @@ export function Identify() {
         userId = result.userId;        
         clearUsersQuestions(db, userId)
 
-        try {
-          manageStorage.clearAsyncStorage();
-  
-          let newUserData = [{userId:userId , name: name, email: email, phone: phone }];
-          manageStorage.addData(newUserData);
-        } catch (error) {
-          Alert.alert("Error", "Failed to save the data to the storage");
-        }
-        console.log("IDENTIFIER ID", Number(userId))
         navigate("quiz", { id: "1", userId:Number(userId) });
       })
     })
-    
-
-    
   };
 
   useEffect(() => {
@@ -178,6 +169,7 @@ export function Identify() {
                 maskType: "BRL",
                 withDDD: true,
                 dddMask: "(99) ",
+
               }}
             />
 

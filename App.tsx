@@ -7,7 +7,6 @@ import db, { initDatabase } from "./sqlite/sqlite";
 import { Routes } from './src/routes';
 import { Loading } from './src/components/Loading';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
-import { ManageStorage } from './src/services/ManageStorage';
 import { useEffect } from 'react';
 
 export default function App() {

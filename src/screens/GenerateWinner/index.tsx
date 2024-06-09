@@ -7,8 +7,8 @@ import {
   Animated,
   ImageBackground,
 } from 'react-native';
-import { NavigationContainer } from '@react-navigation/native';
-import { ManageStorage } from '../../services/ManageStorage';
+import { useUserResponse } from '../../models/users_response';
+import db from '../../../sqlite/sqlite';
 
 // Dummy array of numbers
 
@@ -17,52 +17,51 @@ export function GenerateWinner (){
   const fadeAnim = useRef(new Animated.Value(0)).current;
   const scaleAnim = useRef(new Animated.Value(1)).current;
   const [user, setUser] = useState(null);
+  const { userResponseHistoryData } = useUserResponse();
 
 
   const drawNumber = async() => {
     // Draw a random number from the array
-    let data
-    let manageStorage = new ManageStorage('users');
-    try {
-      data = await manageStorage.getData(); 
-    } catch (error) {
-      console.error("Error saving users to AsyncStorage", error);
-    }
+    let data; 
+    await userResponseHistoryData(db).then((response:any) => {
+      console.log("NEW RESPONSE", response)
+      data = response
+
+      const randomIndex = Math.floor(Math.random() * data.length);
+      const drawnNumber = data.map((x:any) => {return x.userId})[randomIndex];
+      
+      setCurrentNumber(drawnNumber);
   
+      let findFela = data.map((x:any) => {return x}).find((element:any) => 
+        element.userId == drawnNumber
+      )
 
-    const randomIndex = Math.floor(Math.random() * data.length);
-    const drawnNumber = data.map((x:any) => {return x[0].userId})[randomIndex];
-    
-    setCurrentNumber(drawnNumber);
+      console.log(findFela, drawnNumber)
+      setUser(user => findFela)
+      fadeAnim.setValue(0);
+      scaleAnim.setValue(1);
 
-    let findFela = data.map((x:any) => {return x[0]}).find((element:any) => 
-      element.userId == drawnNumber
-    )
-    console.log(findFela, drawnNumber)
-    setUser(user => findFela)
-    // Reset animations
-    fadeAnim.setValue(0);
-    scaleAnim.setValue(1);
-
-    // Start animations
-    Animated.sequence([
-      Animated.timing(scaleAnim, {
-        toValue: 2,
-        duration: 3000,
-        useNativeDriver: true,
-      }),
-      Animated.timing(fadeAnim, {
-        toValue: 1,
-        duration: 3000,
-        useNativeDriver: true,
-      }),
-      Animated.timing(scaleAnim, {
-        toValue: 1,
-        duration: 3000,
-        useNativeDriver: true,
-      }),
-    ]).start();
+      Animated.sequence([
+        Animated.timing(scaleAnim, {
+          toValue: 2,
+          duration: 3000,
+          useNativeDriver: true,
+        }),
+        Animated.timing(fadeAnim, {
+          toValue: 1,
+          duration: 3000,
+          useNativeDriver: true,
+        }),
+        Animated.timing(scaleAnim, {
+          toValue: 1,
+          duration: 3000,
+          useNativeDriver: true,
+        }),
+      ]).start();
+    })
   };
+
+    
 
   return (
     <ImageBackground

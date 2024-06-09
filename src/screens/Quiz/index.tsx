@@ -20,20 +20,15 @@ import { styles } from './styles';
 import { THEME } from '../../styles/theme';
 
 import { QUIZ } from '../../data/quiz';
-import { historyAdd } from '../../storage/quizHistoryStorage';
 
 import { Loading } from '../../components/Loading';
 import { Question } from '../../components/Question';
 import { QuizHeader } from '../../components/QuizHeader';
 import { ConfirmButton } from '../../components/ConfirmButton';
-import { OutlineButton } from '../../components/OutlineButton';
 import { ProgressBar } from '../../components/ProgressBar';
 import { OverlayFeedback } from '../../components/OverlayFeedback';
-import { ManageStorage } from '../../services/ManageStorage';
 import { ShowAnswerButton } from '../../components/ShowAnswerButton';
 import { CancelButton } from '../../components/CancelButton';
-import { useFonts } from 'expo-font';
-import * as SQLite from 'expo-sqlite';
 
 import { useUserResponse } from "../../models/users_response";
 import db from "../../../sqlite/sqlite";
@@ -76,7 +71,7 @@ export function Quiz() {
  // const quizSelected = QUIZ.filter(item => item.id === id)[0];
     getUsersResponse(db)
 
-    const quizSelected = getQuestionsByLevel(QUIZ, 1)[0];
+    const quizSelected = getQuestionsByLevel(QUIZ, 3)[0];
 
     setQuiz(quizSelected);
     // console.log("ARROBAAAAAA",quiz.questions.length)
@@ -134,15 +129,15 @@ export function Quiz() {
   }
 
   async function handleFinished() {
-    await historyAdd({
-      id: new Date().getTime().toString(),
-      userId: userId,
-      title: quiz.title,
-      level: quiz.level,
-      points,
-      questions: quiz.questions.length
-    });
-    console.log("QUIZZZZZZZZZ ID: " , userId)
+    // await historyAdd({
+    //   id: new Date().getTime().toString(),
+    //   userId: userId,
+    //   title: quiz.title,
+    //   level: quiz.level,
+    //   points,
+    //   questions: quiz.questions.length
+    // });
+    // console.log("QUIZZZZZZZZZ ID: " , userId)
     navigate('finish', {
       points: String(points),
       userId: userId,
@@ -181,16 +176,10 @@ export function Quiz() {
     }
     console.log("POIIINTSS",points)
 
-    let manageStorage = new ManageStorage('users_questions');
     await checkUserResponseAlreadyExists(db,userId, currentQuestion);
 
     await storeQuestionAnswer(correct);
     
-    try {
-      manageStorage.addData([{userId: userId, questionId :currentQuestion, isCorrect: correct }]); 
-    } catch (error) {
-      console.error("Error saving users to AsyncStorage", error);
-    }
     
     setIsConfirmed(isConfirmed => 0);    
     setAlternativeSelected(null);

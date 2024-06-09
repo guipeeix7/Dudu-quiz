@@ -46,6 +46,7 @@ export const styles = StyleSheet.create({
   },
   buttonText: {
     color: '#fff',
+    fontFamily: "PlusJakartaSans-ExtraBoldItalic",
     fontSize: 18,
   },
 });

@@ -99,7 +99,7 @@ export const QUIZ = [
           '2 anos',
           '1 ano e meio'
         ],
-        correct: 2
+        correct: 3
       },
       {
         title: 'Formigamentos, dormências em membros e memória fraca costumam ser sintomas mais comuns da deficiência de quais dos nutrientes abaixo?',
@@ -226,7 +226,7 @@ export const QUIZ = [
           '15%',
           '10%'
         ],
-        correct: 2
+        correct: 1
       }
     ]
   }

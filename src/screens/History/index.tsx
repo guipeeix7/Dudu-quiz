@@ -9,11 +9,7 @@ import { Header } from '../../components/Header';
 import { HistoryCard, HistoryProps } from '../../components/HistoryCard';
 
 import { styles } from './styles';
-import { historyGetAll, historyRemove } from '../../storage/quizHistoryStorage';
 import { Loading } from '../../components/Loading';
-import { THEME } from '../../styles/theme';
-import { Button } from '../../components/Button';
-import { WinnerGenButton } from '../../components/WinnerGenButton';
 import { Text } from 'react-native-elements';
 import { useUserResponse } from '../../models/users_response';
 import db from '../../../sqlite/sqlite';
@@ -29,10 +25,14 @@ export function History() {
   
 
   async function fetchHistory() {
-    const response = await historyGetAll();
-    await userResponseHistoryData(db)
+    // const response = await historyGetAll();
+    // console.log("PREVIOUS RESPONSE" , response)
+    let history; 
+    await userResponseHistoryData(db).then((response:any) => {
+      console.log("NEW RESPONSE", response)
+      setHistory(response);
+    })
     
-    setHistory(response);
     setIsLoading(false);
   }
 
