@@ -1,16 +1,12 @@
 import { ImageBackground, Text, View } from 'react-native';
 import { useNavigation, useRoute } from '@react-navigation/native';
-
 import { Button } from '../../components/Button';
 import { Stars } from '../../components/Stars';
 import axios from 'axios';
-import axiosRetry from 'axios-retry';
-
 import { styles } from './styles';
-import React, { useEffect, useLayoutEffect } from 'react';
+import React, { useLayoutEffect } from 'react';
 import db from "../../../sqlite/sqlite";
 import { useUserResponse } from '../../models/users_response';
-import { useUsers } from '../../models/users';
 
 interface Params {
   total: string;
@@ -20,9 +16,8 @@ interface Params {
 
 export function Finish() {
   const route = useRoute();
-  const { points, total, userId } = route.params as Params;
-  const { responseHistoryDataByUserId, currentUserResponseHistory, userResponseHistoryData, userResponseHistory } = useUserResponse();
-  const { users,getUsers,addUser, user, checkUserExistsByEmail, deleteUser,getUserIdByEmail} = useUsers();
+  const { total, userId } = route.params as Params;
+  const { responseHistoryDataByUserId } = useUserResponse();
   const [userPoints, setUserPoints] = React.useState(0);
 
   const { navigate } = useNavigation();
@@ -37,8 +32,6 @@ export function Finish() {
   
 
   async function getUserResult(){
-    // let userId = user.userId; 
-    // console.log("At the end => ",userId )
     await responseHistoryDataByUserId(db, userId).then((response:any)=> {
       if(typeof response !== 'undefined' ){
         console.log( "UserIdData >>> ",response,userId, response.points)

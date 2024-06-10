@@ -49,4 +49,22 @@ export const styles = StyleSheet.create({
     fontFamily: "PlusJakartaSans-ExtraBoldItalic",
     fontSize: 18,
   },
+  pullDataBtn: {
+    marginTop:36,
+    height: 50,
+    width:500,
+    backgroundColor: THEME.COLORS.WARNING_LIGHT,
+    borderRadius: 25,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  pushDataBtn: {
+    marginTop:36,
+    height: 50,
+    width:500,
+    backgroundColor: THEME.COLORS.WARNING_LIGHT,
+    borderRadius: 25,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
 });

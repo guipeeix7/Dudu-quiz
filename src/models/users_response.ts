@@ -36,16 +36,27 @@ export function useUserResponse() {
   };
 
   const checkUserResponseAlreadyExists = (db: SQLite.Database, userId: number, questionId: number) => {
-    db.transaction((tx) => {
-      tx.executeSql(
-        'SELECT * FROM user_response WHERE userId = ? AND questionId = ?;',
-        [userId, questionId],
+    
+    
+    return new Promise((resolve, reject) => db.transaction(tx => {
+      tx.executeSql(`SELECT * FROM user_response WHERE userId = ? AND questionId = ?;`, [userId, questionId], (_, { rows: {_array} }) => {
+        // setUserResponseAlreadyExists(_array.length > 0 ? 1 : 0);  
+        resolve(_array.length > 0 ? 1 : 0)
+      }), (sqlError:any) => {
+          console.log(sqlError);
+      }}, (txError) => {
+      console.log(txError);
+    }))
+    // db.transaction((tx) => {
+    //   tx.executeSql(
+    //     'SELECT * FROM user_response WHERE userId = ? AND questionId = ?;',
+    //     [userId, questionId],
 
-        (_, { rows: { _array } }) => {
-          setUserResponseAlreadyExists(_array.length > 0 ? 1 : 0);
-        }
-      )
-    });
+    //     (_, { rows: { _array } }) => {
+    //       setUserResponseAlreadyExists(_array.length > 0 ? 1 : 0);
+    //     }
+    //   )
+    // });
   };
 
 
@@ -104,6 +115,17 @@ export function useUserResponse() {
     });
   };
 
+  const getAllUsersAnswers = async (db: SQLite.Database) => {
+    return new Promise((resolve, reject) => db.transaction(tx => {
+      tx.executeSql(`SELECT * FROM user_response ;`, [], (_, { rows: {_array} }) => {
+          resolve(_array)
+      }), (sqlError:any) => {
+          console.log(sqlError);
+      }}, (txError) => {
+      console.log(txError);
+    }))
+  }
+
   return {
     usersResponses,
     getUsersResponse,
@@ -112,7 +134,7 @@ export function useUserResponse() {
     userResponseAlreadyExists,
     updateResponse,
     userResponseHistory,
-
+    getAllUsersAnswers,
     deleteUserResponse,
     userResponseHistoryData,
     responseHistoryDataByUserId,

@@ -1,7 +1,6 @@
 import { useEffect, useRef, useState } from 'react';
 import { useNavigation } from '@react-navigation/native';
 import { View, ScrollView, Alert, ImageBackground, TouchableOpacity } from 'react-native';
-import { HouseLine, Trash } from 'phosphor-react-native';
 import Animated, { Layout, SlideInRight, SlideOutRight } from 'react-native-reanimated';
 import { Swipeable } from 'react-native-gesture-handler';
 
@@ -13,11 +12,14 @@ import { Loading } from '../../components/Loading';
 import { Text } from 'react-native-elements';
 import { useUserResponse } from '../../models/users_response';
 import db from '../../../sqlite/sqlite';
+import { useUsers } from '../../models/users';
 
 export function History() {
-  const { userResponseHistoryData, usersResponses, getUsersResponse,addUserResponse, deleteUserResponse,  checkUserResponseAlreadyExists, updateResponse, userResponseAlreadyExists } = useUserResponse();
+  const { userResponseHistoryData, getAllUsersAnswers, checkUserResponseAlreadyExists, updateResponse, addUserResponse } = useUserResponse();
+  const { getAllUsers, checkUserExistsByEmail, updateUserByEmail, addUser } = useUsers();
 
   const [isLoading, setIsLoading] = useState(true);
+
   const [history, setHistory] = useState<HistoryProps[]>([]);
   const { navigate } = useNavigation();
 
@@ -25,23 +27,113 @@ export function History() {
   
 
   async function fetchHistory() {
-    // const response = await historyGetAll();
-    // console.log("PREVIOUS RESPONSE" , response)
     let history; 
     await userResponseHistoryData(db).then((response:any) => {
-      console.log("NEW RESPONSE", response)
       setHistory(response);
     })
     
     setIsLoading(false);
   }
 
-  async function remove(id: string) {
-    await historyRemove(id);
+  const pushData = async () => {
+    
+    await getAllUsers(db).then(async (result:any) => {
+      const response = await fetch('https://bariatricasemsofrimento.com.br/system/panel/quizz', {
+        method: 'POST',
+        headers: {
+          Accept: 'application/json',
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          quizzUserData: result
+        }),
+      })
+      .then(json => {
+        Alert.alert('Sucesso', "Dados atualizados com sucesso.")
+      })
+      .catch(error => {
+        Alert.alert('Alerta', "Não foi possível completar a solicitação.")
+      });
 
-    fetchHistory();
-  }
+    });
 
+    await getAllUsersAnswers(db).then(async (result2:any) => {
+      console.log(result2)
+
+      const response2 = await fetch('https://bariatricasemsofrimento.com.br/system/panel/quizz_answer', {
+        method: 'POST',
+        headers: {
+          Accept: 'application/json',
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          quizzUserData: result2
+        }),
+      })
+      .then(json => {
+        Alert.alert('Sucesso', "Dados atualizados com sucesso.")
+      })
+      .catch(error => {
+        Alert.alert('Alerta', "Não foi possível completar a solicitação.")
+      });
+    });
+    
+  };
+
+  const pullData = async () => {
+    await getAllUsers(db).then(async (result:any) => {
+      const response = await fetch('https://bariatricasemsofrimento.com.br/system/panel/quizz', {})
+      .then(response => response.json())
+      .then(async json => {
+        Alert.alert('Aviso', "Atualizando dados, por favor aguarde")
+
+        // console.log(json[0].id)
+        for await (let element of json) {
+          await checkUserExistsByEmail(db, element.email).then(async (hasUser) => {
+            if(!hasUser){
+              await addUser(db, element.name,element.email,element.phone );
+              console.log('creates')
+            }
+            else{
+              await updateUserByEmail(db, element.name,element.email,element.phone)
+              console.log('updated')
+            }
+          })
+        }
+        Alert.alert('Sucesso', "Dados atualizados com sucesso.")
+
+      })
+      .catch(error => {
+        Alert.alert('Alerta', "Não foi possível completar a solicitação.")
+      });
+
+    });
+
+    await getAllUsersAnswers(db).then(async (result2:any) => {
+      const response = await fetch('https://bariatricasemsofrimento.com.br/system/panel/quizz_answer', {})
+        .then(response => response.json())
+        .then(async json => {
+          for await (let element of json) {
+            await checkUserResponseAlreadyExists(db, element.userId, element.questionId).then(async (hasResponse) => {
+              if(hasResponse){
+                console.log('updated')
+                await updateResponse(db, element.userId, element.currentQuestion, element.correct)
+              }
+              else{
+                console.log('inserted')
+                await addUserResponse(db, element.userId, element.questionId, element.isCorrect)
+              }
+            })
+
+          }
+          Alert.alert('Sucesso', "Dados atualizados com sucesso.")
+
+        })
+        .catch(error => {
+          Alert.alert('Alerta', "Não foi possível completar a solicitação.")
+        });
+    });
+  };
 
   function handleRemove(id: string, index: number) {
     swipeableRefs.current?.[index].close();
@@ -78,6 +170,24 @@ export function History() {
         title="Histórico"
         subtitle={`Resultados passados ${'\n'}`}
       />
+      
+      <TouchableOpacity
+          onPress={() => pushData()}
+          style={styles.pushDataBtn}
+        >
+          <Text style={styles.buttonText}>
+            Enviar Dados
+          </Text>
+      </TouchableOpacity>
+      
+      <TouchableOpacity
+          onPress={() => pullData()}
+          style={styles.pullDataBtn}
+        >
+          <Text style={styles.buttonText}>
+            Receber Dados
+          </Text>
+      </TouchableOpacity>
       
       <TouchableOpacity
           onPress={() => navigate('sortWinner')}

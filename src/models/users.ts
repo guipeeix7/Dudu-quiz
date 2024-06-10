@@ -70,6 +70,19 @@ export function useUsers() {
     // );
   };
 
+  
+  const getAllUsers = async (db: SQLite.Database) => {
+    return new Promise((resolve, reject) => db.transaction(tx => {
+      tx.executeSql(`SELECT * FROM users ;`, [], (_, { rows: {_array} }) => {
+          resolve(_array)
+      }), (sqlError:any) => {
+          console.log(sqlError);
+      }}, (txError) => {
+      console.log(txError);
+    }))
+  }
+
+
   const deleteUser = (db: SQLite.Database, id: number) => {
     db.transaction((tx) => {
       tx.executeSql("DELETE FROM users WHERE userId = ?;", [id]);
@@ -87,6 +100,7 @@ export function useUsers() {
     updateUserByEmail,
     getUserIdByEmail,
     // updateUser,
+    getAllUsers,
     deleteUser,
   };
 }
