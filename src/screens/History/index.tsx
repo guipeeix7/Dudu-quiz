@@ -92,7 +92,8 @@ export function History() {
         for await (let element of json) {
           await checkUserExistsByEmail(db, element.email).then(async (hasUser) => {
             if(!hasUser){
-              await addUser(db, element.idUser, element.name,element.email,element.phone );
+              let uid = new Date().getTime();
+              await addUser(db, uid, element.name,element.email,element.phone );
               console.log('creates')
             }
             else{
@@ -211,7 +212,7 @@ export function History() {
               exiting={SlideOutRight}
               layout={Layout.springify()}
             >
-              <Swipeable
+              {/* <Swipeable
                 ref={ref => {
                   if (ref) {
                     swipeableRefs.current.push(ref);
@@ -227,7 +228,7 @@ export function History() {
                 overshootLeft={false}
                 leftThreshold={10}
                 onSwipeableOpen={() => handleRemove(item.id, index)}
-              >
+              > */}
                 <HistoryCard data={item} />
               </Swipeable>
             </Animated.View>
