@@ -71,7 +71,7 @@ export function History() {
         }),
       })
       .then(json => {
-        Alert.alert('Sucesso', "Dados atualizados com sucesso.")
+        // Alert.alert('Sucesso', "Dados atualizados com sucesso.")
       })
       .catch(error => {
         Alert.alert('Alerta', "Não foi possível completar a solicitação.")
@@ -80,18 +80,19 @@ export function History() {
     
   };
 
-  const pullData = async () => {
+  const pullData = async () => {        
+    Alert.alert('Aviso', "Atualizando dados, por favor aguarde")
+
     await getAllUsers(db).then(async (result:any) => {
       const response = await fetch('https://bariatricasemsofrimento.com.br/system/panel/quizz', {})
       .then(response => response.json())
       .then(async json => {
-        Alert.alert('Aviso', "Atualizando dados, por favor aguarde")
 
         // console.log(json[0].id)
         for await (let element of json) {
           await checkUserExistsByEmail(db, element.email).then(async (hasUser) => {
             if(!hasUser){
-              await addUser(db, element.name,element.email,element.phone );
+              await addUser(db, element.idUser, element.name,element.email,element.phone );
               console.log('creates')
             }
             else{
@@ -100,7 +101,7 @@ export function History() {
             }
           })
         }
-        Alert.alert('Sucesso', "Dados atualizados com sucesso.")
+        // Alert.alert('Sucesso', "Dados atualizados com sucesso.")
 
       })
       .catch(error => {

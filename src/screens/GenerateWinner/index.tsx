@@ -91,7 +91,7 @@ export function GenerateWinner (){
                     Email: {user.email}
                   </Text>
                   <Text style={styles.winnerText}>
-                    Telefone: {user.phone}
+                    Telefone: {user.phone.substring(0,9)+"-XXXX"}
                   </Text>
                   
                 </View>

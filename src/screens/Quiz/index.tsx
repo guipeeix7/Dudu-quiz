@@ -112,8 +112,9 @@ export function Quiz() {
       await setTimeout(async () => {
         await handleNextQuestion();
         console.log("expecting first")
-        setIsConfirmed(isConfirmed=>0)
       },1800)
+      setIsConfirmed(isConfirmed=>0)
+
     }
     else{
       setIsConfirmed(isConfirmed=>1)

@@ -19,9 +19,10 @@ export function useUsers() {
     db.readTransaction(fetchUsers);
   };
 
-  const addUser = (db: SQLite.Database, name: string, email : string, phone:string) => {
+  const addUser = (db: SQLite.Database,id :number, name: string, email : string, phone:string) => {
+    console.log(id)
     db.transaction((tx) => {
-      tx.executeSql("INSERT INTO users (name, email, phone) VALUES (?, ?, ?);", [name, email, phone]);
+      tx.executeSql("INSERT INTO users (userId, name, email, phone) VALUES (?, ?, ?, ?);", [id, name, email, phone]);
 
       fetchUsers(tx);
     });

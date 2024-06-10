@@ -88,15 +88,16 @@ export function Identify() {
     }
     await checkUserExistsByEmail(db, email).then((hasUser) => {
       if(!hasUser){
-        addUser(db, name,email,phone );
-        console.log('creates')
-  
+        let uid = new Date().getTime();
+        console.log(uid)
+        addUser(db, uid, name,email,phone );
       }
       else{
         updateUserByEmail(db, name,email,phone)
         console.log('updated')
       }
-    }).then(()=>{
+    })
+    .then(()=>{
       let userId; 
       getUserIdByEmail(db, email).then((result:any) => {
         userId = result.userId;        
